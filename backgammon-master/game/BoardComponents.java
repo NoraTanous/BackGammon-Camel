@@ -1,6 +1,11 @@
 package game;
 
+
 import java.util.LinkedList;
+
+import java.util.Random;
+
+
 import constants.GameConstants;
 import constants.PlayerPerspectiveFrom;
 import constants.Quadrant;
@@ -46,6 +51,7 @@ public class BoardComponents extends HBox {
 		initCubeHomes();
 		initDices();
 		initPips();
+		assignSpecialStations(); // Assign Question and Surprise Stations
 	}
 	
 	private void initCubeHomes() {
@@ -495,6 +501,37 @@ public class BoardComponents extends HBox {
 			}
 		}
 	}
+	/**
+	 * Assign special stations (Question Stations and Surprise Station) to random pips.
+	 */
+	private void assignSpecialStations() {
+	    Random random = new Random();
+	    int questionStationsToAssign = 3;
+	    int surpriseStationsToAssign = 1;
+
+	    while (questionStationsToAssign > 0 || surpriseStationsToAssign > 0) {
+	        int randomIndex = random.nextInt(MAXPIPS);
+	        Pip pip = pips[randomIndex];
+
+	        if (questionStationsToAssign > 0 && !pip.isQuestionStation() && !pip.isSurpriseStation()) {
+	            pip.setQuestionStation(true);
+	            pip.updateVisualRepresentation(); // Update visuals
+	            System.out.println("Question Station assigned to Pip number: " + pip.getPipNumber());
+	            questionStationsToAssign--;
+	        } else if (surpriseStationsToAssign > 0 && !pip.isQuestionStation() && !pip.isSurpriseStation()) {
+	            pip.setSurpriseStation(true);
+	            pip.updateVisualRepresentation(); // Update visuals
+	            System.out.println("Surprise Station assigned to Pip number: " + pip.getPipNumber());
+	            surpriseStationsToAssign--;
+	        }
+	    }
+	}
+	
+
+
+	
+
+
 	
 	/**
 	 * Drawing the pips by adding them to the leftBoard and rightBoard.

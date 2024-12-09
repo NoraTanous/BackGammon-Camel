@@ -1,13 +1,14 @@
 package ui;
 
-import constants.GameConstants;
-import constants.MessageType;
 import game_engine.Settings;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+
+import constants.GameConstants;
+import constants.MessageType;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
