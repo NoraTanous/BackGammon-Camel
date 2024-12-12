@@ -1,6 +1,11 @@
 package game_engine;
 
+import java.io.FileNotFoundException;
+
+import java.io.InputStream;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import constants.GameConstants;
 import constants.MessageType;
@@ -13,14 +18,20 @@ import game.DoublingCubeHome;
 import game.TouchablesStorer;
 import game.Home;
 import game.Pip;
+import game.QuestionManager;
+import game.QuestionPromptHandler;
 import interfaces.ColorParser;
 import interfaces.ColorPerspectiveParser;
 import interfaces.InputValidator;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -38,7 +49,7 @@ import ui.RollDieButton;
  * @author Braddy Yeoh, 17357376
  *
  */
-public class EventController implements ColorParser, ColorPerspectiveParser, InputValidator {
+public class EventController implements ColorParser, ColorPerspectiveParser, InputValidator{
 	private Stage stage;
 	private MatchController root;
 	private GameComponentsController game;
@@ -47,6 +58,7 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 	private RollDieButton rollDieBtn;
 	private CommandPanel cmdPnl;
 	private CommandController cmd;
+	private QuestionManager questionManager;
 
 	public EventController(Stage stage, MatchController root, GameComponentsController game, GameplayController gameplay,
 			CommandPanel cmdPnl, CommandController cmd, InfoPanel infoPnl, RollDieButton rollDieBtn) {
@@ -60,7 +72,95 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 		this.rollDieBtn = rollDieBtn;
 		initGameListeners();
 		initUIListeners();
+		try {
+		    // Load JSON as InputStream from resources
+		    InputStream inputStream = getClass().getResourceAsStream("/readme-resources/CamelQuestionDB.json");
+		    if (inputStream == null) {
+		        throw new FileNotFoundException("File not found: /readme-resources/CamelQuestionDB.json");
+		    }
+		    this.questionManager = new QuestionManager(inputStream); // Pass InputStream to the constructor
+		    System.out.println("QuestionManager initialized successfully.");
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    System.err.println("Failed to initialize QuestionManager.");
+		    this.questionManager = null; // Fallback in case of error
+		}
+
 	}
+	
+	private void handleQuestionStation(Pip pip) {
+        if (questionManager == null) {
+            System.err.println("QuestionManager is not initialized. Skipping question station.");
+            return;
+        }
+
+        if (pip.isQuestionStation()) {
+            QuestionPromptHandler questionPromptHandler = new QuestionPromptHandler(questionManager);
+            questionPromptHandler.showQuestionPrompt();
+        }
+    }
+
+	
+	private void handleSurpriseStation(Pip pip) {
+	    if (pip.isSurpriseStation()) {
+	        // Create a new Stage for the pop-up
+	        Stage surpriseStage = new Stage();
+	        surpriseStage.initModality(Modality.APPLICATION_MODAL);
+	        surpriseStage.setTitle("Surprise Station");
+
+	        // Create content for the pop-up
+	        Label messageLabel = new Label("You have reached a Surprise Station!\nYou earned a bonus turn!");
+	        messageLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10;");
+	        VBox content = new VBox(messageLabel);
+	        content.setStyle("-fx-alignment: center; -fx-spacing: 10;");
+	        Scene scene = new Scene(content, 300, 150);
+
+	        surpriseStage.setScene(scene);
+
+	        // Create a timer to close the pop-up after 10 seconds
+	        Timer timer = new Timer();
+	        TimerTask closeTask = new TimerTask() {
+	            @Override
+	            public void run() {
+	                Platform.runLater(surpriseStage::close);
+	            }
+	        };
+
+	        // Schedule the pop-up to close after 10 seconds
+	        timer.schedule(closeTask, 10000);
+
+	        // Show the pop-up
+	        surpriseStage.showAndWait();
+
+	        // Clean up the timer when the pop-up is closed
+	        surpriseStage.setOnCloseRequest(event -> timer.cancel());
+	    }
+	}
+
+	TouchablesStorerHandler touchablesStorerHandler1 = new TouchablesStorerHandler() {
+	    @Override
+	    public void onClicked(TouchablesStorer object) {
+	        if (object instanceof Pip) {
+	            Pip pip = (Pip) object;
+
+	            // Handle Question Station
+	            if (pip.isQuestionStation()) {
+	                handleQuestionStation(pip);
+	                return;
+	            }
+
+	            // Handle Surprise Station
+	            if (pip.isSurpriseStation()) {
+	                handleSurpriseStation(pip);
+	                return;
+	            }
+	        }
+
+	        // Existing logic for other touchables
+	    }
+	};
+
+
 
 	private void initGameListeners() {
 		// Exit selection mode when any part of the game board is clicked.

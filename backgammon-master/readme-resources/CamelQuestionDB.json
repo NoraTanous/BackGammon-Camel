@@ -1,0 +1,101 @@
+[
+    {
+        "question": "What is the primary purpose of a version control system in software development?",
+        "answers": [
+            "To track and manage changes in code",
+            "To improve the performance of software",
+            "To design user interfaces",
+            "To automate testing"
+        ],
+        "correct_ans": "1",
+        "difficulty": "1"
+    },
+    {
+        "question": "Which Agile ceremony is focused on reflecting and improving team processes?",
+        "answers": [
+            "Sprint Planning",
+            "Sprint Review",
+            "Retrospective",
+            "Daily Standup"
+        ],
+        "correct_ans": "3",
+        "difficulty": "1"
+    },
+    {
+        "question": "In software testing, what does the term 'bug' refer to?",
+        "answers": [
+            "A feature request",
+            "An error or defect in code",
+            "A software requirement",
+            "A part of the documentation"
+        ],
+        "correct_ans": "2",
+        "difficulty": "1"
+    },
+    {
+        "question": "What is the main purpose of a Use Case Diagram in software development?",
+        "answers": [
+            "To describe database structure",
+            "To depict the interactions between actors and the system",
+            "To detail the software's backend logic",
+            "To outline the UI design"
+        ],
+        "correct_ans": "2",
+        "difficulty": "2"
+    },
+    {
+        "question": "Which component of the MVC pattern handles user input?",
+        "answers": [
+            "Model",
+            "View",
+            "Controller",
+            "Database"
+        ],
+        "correct_ans": "3",
+        "difficulty": "2"
+    },
+    {
+        "question": "What is the purpose of a Sprint Backlog in Agile development?",
+        "answers": [
+            "To document the overall project plan",
+            "To track bugs and defects",
+            "To list tasks for a specific sprint",
+            "To store all technical specifications"
+        ],
+        "correct_ans": "3",
+        "difficulty": "2"
+    },
+    {
+        "question": "How does a 'Distributed Version Control System' differ from a 'Centralized Version Control System'?",
+        "answers": [
+            "Distributed systems do not require a server for version control",
+            "Centralized systems allow multiple users to work simultaneously",
+            "Distributed systems store the complete repository locally for each user",
+            "Centralized systems are more secure than distributed systems"
+        ],
+        "correct_ans": "3",
+        "difficulty": "3"
+    },
+    {
+        "question": "What is the significance of the Dependency Inversion Principle in software design?",
+        "answers": [
+            "To reduce the need for version control",
+            "To ensure high coupling between software components",
+            "To promote the use of high-level modules depending on abstractions",
+            "To focus exclusively on user interface design"
+        ],
+        "correct_ans": "3",
+        "difficulty": "3"
+    },
+    {
+        "question": "In Test-Driven Development (TDD), which of the following steps comes first?",
+        "answers": [
+            "Refactor the code",
+            "Write production code",
+            "Write a failing test case",
+            "Deploy the software"
+        ],
+        "correct_ans": "3",
+        "difficulty": "3"
+    }
+]
