@@ -156,7 +156,7 @@ public class GameConstants {
 	 * @return the file input stream.
 	 */
 	private static InputStream getFile(String path) {
-		return GameConstants.class.getResourceAsStream("/game/" + path);
+		return GameConstants.class.getResourceAsStream("/Model/" + path);
 	}
 	
 	/**
