@@ -13,5 +13,5 @@ package constants;
  *
  */
 public enum DieInstance {
-	SINGLE, DOUBLE, DEFAULT;
+	SINGLE, DOUBLE, DEFAULT,DIFF;
 }

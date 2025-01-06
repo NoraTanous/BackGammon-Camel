@@ -7,7 +7,7 @@
             "To design user interfaces",
             "To automate testing"
         ],
-        "correct_ans": "1",
+        "correct_ans": "To track and manage changes in code",
         "difficulty": "1"
     },
     {
@@ -18,7 +18,7 @@
             "Retrospective",
             "Daily Standup"
         ],
-        "correct_ans": "3",
+        "correct_ans": "Retrospective",
         "difficulty": "1"
     },
     {
@@ -29,7 +29,7 @@
             "A software requirement",
             "A part of the documentation"
         ],
-        "correct_ans": "2",
+        "correct_ans": "An error or defect in code",
         "difficulty": "1"
     },
     {
@@ -40,7 +40,7 @@
             "To detail the software's backend logic",
             "To outline the UI design"
         ],
-        "correct_ans": "2",
+        "correct_ans": "To depict the interactions between actors and the system",
         "difficulty": "2"
     },
     {
@@ -51,7 +51,7 @@
             "Controller",
             "Database"
         ],
-        "correct_ans": "3",
+        "correct_ans": "Controller",
         "difficulty": "2"
     },
     {
@@ -62,7 +62,7 @@
             "To list tasks for a specific sprint",
             "To store all technical specifications"
         ],
-        "correct_ans": "3",
+        "correct_ans": "To list tasks for a specific sprint",
         "difficulty": "2"
     },
     {
@@ -73,7 +73,7 @@
             "Distributed systems store the complete repository locally for each user",
             "Centralized systems are more secure than distributed systems"
         ],
-        "correct_ans": "3",
+        "correct_ans": "Distributed systems store the complete repository locally for each user",
         "difficulty": "3"
     },
     {
@@ -84,7 +84,7 @@
             "To promote the use of high-level modules depending on abstractions",
             "To focus exclusively on user interface design"
         ],
-        "correct_ans": "3",
+        "correct_ans": "To promote the use of high-level modules depending on abstractions",
         "difficulty": "3"
     },
     {
@@ -95,7 +95,7 @@
             "Write a failing test case",
             "Deploy the software"
         ],
-        "correct_ans": "3",
+        "correct_ans": "Write a failing test case",
         "difficulty": "3"
     }
 ]

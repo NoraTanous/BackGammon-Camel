@@ -216,7 +216,16 @@ public class GameConstants {
 		}
 		return bg;
 	}
-
+	public static Background getDiceImage() {
+		InputStream input = getFile("img/board/green.png");
+		Background bg = new Background(new BackgroundImage(new Image(input), null, null, null, null));
+		try {
+			input.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return bg;
+	}
 	/**
 	 * Returns table (window) background.
 	 * @return image of the table.

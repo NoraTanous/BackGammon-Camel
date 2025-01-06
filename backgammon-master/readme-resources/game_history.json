@@ -1,0 +1,18 @@
+[
+  {
+    "playerOne": "Alice",
+    "playerTwo": "Bob",
+    "scorePlayerOne": 5,
+    "scorePlayerTwo": 3,
+    "winner": "Alice",
+    "dateTime": "2024-12-22T14:00:00"
+  },
+  {
+    "playerOne": "Charlie",
+    "playerTwo": "Diana",
+    "scorePlayerOne": 2,
+    "scorePlayerTwo": 5,
+    "winner": "Diana",
+    "dateTime": "2024-12-21T16:30:00"
+  }
+]
