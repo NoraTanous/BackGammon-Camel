@@ -43,6 +43,8 @@ public class AdminLoginController {
 
             // Close the login window
             Stage stage = (Stage) adminNameField.getScene().getWindow();
+         // Set custom icon for the menu stage
+            setCustomIcon(stage);
             stage.close();
         } else {
             // Show error alert
@@ -68,9 +70,10 @@ public class AdminLoginController {
             menuStage.show();
          // Set custom icon for the menu stage
             setCustomIcon(menuStage);
-
             // Close the admin login window
             Stage currentStage = (Stage) backButton.getScene().getWindow();
+         // Set custom icon for the menu stage
+            setCustomIcon(currentStage);
             currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();

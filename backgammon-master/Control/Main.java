@@ -20,6 +20,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args); // Calls the start method.
     }
+    
 
     @Override
     public void start(Stage stage) throws IOException {
