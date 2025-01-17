@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="0.89" prefHeight="383.0" prefWidth="459.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Control.SurpriseStationController">
+   <children>
+      <ImageView fitHeight="401.0" fitWidth="488.0" layoutX="-14.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/Subject.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../readme-resources/confetti.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="155.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../readme-resources/confetti.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="305.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../readme-resources/confetti.png" />
+         </image>
+      </ImageView>
+      <Text fill="#dab80c" layoutX="2.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CONGRATULATION!!!!" textAlignment="CENTER" wrappingWidth="455.80332946777344">
+         <font>
+            <Font name="Elephant" size="26.0" />
+         </font>
+      </Text>
+      <Text layoutX="71.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have won another  round" textAlignment="CENTER" wrappingWidth="318.1367492675781">
+         <font>
+            <Font name="Elephant" size="19.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
