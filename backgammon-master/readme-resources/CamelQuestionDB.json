@@ -97,5 +97,317 @@
         ],
         "correct_ans": "Write a failing test case",
         "difficulty": "3"
-    }
+    },
+	{
+	       "question": "How does Agile's iterative approach ensure better alignment with customer expectations?",
+	       "answers": [
+	           "By delivering working software at the end of the project.",
+	           "By involving the customer in regular feedback cycles throughout the project.",
+	           "By focusing solely on technical quality rather than customer needs.",
+	           "By reducing the need for ongoing collaboration."
+	       ],
+	       "correct_ans": "By involving the customer in regular feedback cycles throughout the project.",
+	       "difficulty": "3"
+	 },
+	{
+	     "question": " In which Agile methodology is detailed planning of requirements done in each development cycle?",
+		    "answers": [
+		        "Scrum",
+		        "Kanban",
+		        "XP",
+		        "SAFe"
+		    ],
+		    "correct_ans": "Scrum",
+		    "difficulty": "2"
+	},
+	{
+			    "question": "Which of the following best describes the difference between functional and non-functional requirements?",
+			    "answers": [
+			        "Functional requirements define system behavior, while non-functional requirements define system constraints and quality attributes.",
+			        "Functional requirements focus on the user interface, while non-functional requirements focus on backend performance.",
+			        "Functional requirements describe what the system should not do, while non-functional requirements describe what it should do.",
+			        "Functional requirements are optional, while non-functional requirements are mandatory."
+			    ],
+			    "correct_ans": " Functional requirements define system behavior, while non-functional requirements define system constraints and quality attributes.",
+			    "difficulty": "1"
+	},
+	{
+			    "question": " What is a common challenge faced during the requirements collection and analysis phase in software development?",
+			    "answers": [
+			        "Ensuring that all team members understand the technical details of the system",
+			        "Aligning collected requirements with business objectives and user needs",
+			        "Minimizing the time spent documenting requirements",
+			        "Avoiding stakeholder involvement in the requirements process"
+			    ],
+			    "correct_ans": "ScrAligning collected requirements with business objectives and user needs",
+			    "difficulty": "2"
+	},
+	{
+	       "question": "How do surveys contribute to software quality improvement?",
+	       "answers": [
+	           "By gathering user feedback on system performance.",
+	           "By automating the testing process.",
+	           "By designing the system architecture.",
+	           "By managing the project budget."
+	       ],
+	       "correct_ans": "By gathering user feedback on system performance.",
+	       "difficulty": "2"
+	   },
+	   {
+	       "question": "What is the primary purpose of a formal survey in software projects?",
+	       "answers": [
+	           "To identify errors in the system.",
+	           "To establish a clear communication channel between developers and stakeholders.",
+	           "To create detailed project documentation.",
+	           "To assess competitor strategies."
+	       ],
+	       "correct_ans": "To establish a clear communication channel between developers and stakeholders.",
+	       "difficulty": "1"
+	   },
+	   {
+	          "question": "What is the role of the Controller in the MVC model?",
+	          "answers": [
+	              "It processes user input and updates the Model and View accordingly.",
+	              "It defines the system architecture.",
+	              "It only manages database connections.",
+	              "It serves static content to users."
+	          ],
+	          "correct_ans": "It processes user input and updates the Model and View accordingly.",
+	          "difficulty": "2"
+	      },
+		  {
+		      "question": "Which architectural pattern is best suited for applications requiring real-time data synchronization between users?",
+		      "answers": [
+		          "Event-Driven Architecture",
+		          "Microservices Architecture",
+		          "Layered Architecture",
+		          "Client-Server Architecture"
+		      ],
+		      "correct_ans": "Event-Driven Architecture",
+		      "difficulty": "3"
+		  },
+		  {
+		      "question": "In which scenario is the Layered Architecture pattern most appropriate?",
+		      "answers": [
+		          "When building systems that require clear separation of concerns, such as presentation, business logic, and data.",
+		          "When designing a system that requires high real-time performance.",
+		          "When scalability is not a concern.",
+		          "When the system is used exclusively by a single user."
+		      ],
+		      "correct_ans": "When building systems that require clear separation of concerns, such as presentation, business logic, and data.",
+		      "difficulty": "2"
+		  },
+		  {
+		         "question": "What does the term 'system maintenance' typically refer to in the context of software engineering?",
+		         "answers": [
+		             "The development of new software systems.",
+		             "Changes made to software after it is in use, primarily in customized systems.",
+		             "Upgrading hardware components to improve software performance.",
+		             "The removal of unused features from a software system."
+		         ],
+		         "correct_ans": "Changes made to software after it is in use, primarily in customized systems.",
+		         "difficulty": "1"
+		     },
+		     {
+		         "question": "What is the primary difference between software maintenance and software evolution?",
+		         "answers": [
+		             "Maintenance focuses on bug fixes, while evolution involves developing new features based on user requirements.",
+		             "Maintenance applies only to generic systems, while evolution applies to customized systems.",
+		             "Maintenance includes architectural changes, while evolution excludes them.",
+		             "There is no difference; both terms are interchangeable."
+		         ],
+		         "correct_ans": "Maintenance focuses on bug fixes, while evolution involves developing new features based on user requirements.",
+		         "difficulty": "2"
+		     },
+		     {
+		         "question": "What is the main characteristic of the 'Phase Out' stage of software maintenance?",
+		         "answers": [
+		             "The software continues to function without any changes, including bug fixes.",
+		             "The software undergoes frequent updates and feature additions.",
+		             "The software is retired from use and replaced by a new system.",
+		             "The software is upgraded to the latest technology standards."
+		         ],
+		         "correct_ans": "The software continues to function without any changes, including bug fixes.",
+		         "difficulty": "2"
+		     },
+		     {
+		         "question": "What percentage of a software lifecycle's cost is typically attributed to the maintenance phase?",
+		         "answers": [
+		             "10%",
+		             "25%",
+		             "67%",
+		             "90%"
+		         ],
+		         "correct_ans": "67%",
+		         "difficulty": "1"
+		     },
+		     {
+		         "question": "What is the focus of corrective maintenance in software systems?",
+		         "answers": [
+		             "Fixing errors that were discovered post-delivery.",
+		             "Adding new features to improve functionality.",
+		             "Adapting the system to new laws or technologies.",
+		             "Optimizing the system for performance improvement."
+		         ],
+		         "correct_ans": "Fixing errors that were discovered post-delivery.",
+		         "difficulty": "1"
+		     },
+		     {
+		         "question": "Which type of software maintenance involves adapting the system to new technologies or regulations?",
+		         "answers": [
+		             "Corrective maintenance",
+		             "Adaptive maintenance",
+		             "Perfective maintenance",
+		             "Preventive maintenance"
+		         ],
+		         "correct_ans": "Adaptive maintenance",
+		         "difficulty": "2"
+		     },
+		     {
+		         "question": "What is a key challenge of perfective maintenance in software systems?",
+		         "answers": [
+		             "Ensuring new functionality integrates with existing systems without conflicting with previous requirements.",
+		             "Reducing the number of existing bugs in the system.",
+		             "Adapting the system to changing legal regulations.",
+		             "Upgrading the system hardware to meet software requirements."
+		         ],
+		         "correct_ans": "Ensuring new functionality integrates with existing systems without conflicting with previous requirements.",
+		         "difficulty": "3"
+		     },
+			 
+			  {
+			         "question": "What is the primary goal of software testing during the development lifecycle?",
+			         "answers": [
+			             "To identify and minimize defects and ensure the software meets the requirements.",
+			             "To design the architecture of the system.",
+			             "To manage project budgets and timelines.",
+			             "To eliminate the need for user feedback."
+			         ],
+			         "correct_ans": "To identify and minimize defects and ensure the software meets the requirements.",
+			         "difficulty": "1"
+			     },
+			     {
+			         "question": "What is the key difference between Software Inspection and Software Testing?",
+			         "answers": [
+			             "Software Inspection analyzes the static representation of the system, while Software Testing examines its runtime behavior.",
+			             "Software Inspection involves runtime execution, while Software Testing focuses on documentation.",
+			             "Software Inspection is only for security analysis, while Software Testing is for functional analysis.",
+			             "Software Inspection and Software Testing are interchangeable."
+			         ],
+			         "correct_ans": "Software Inspection analyzes the static representation of the system, while Software Testing examines its runtime behavior.",
+			         "difficulty": "2"
+			     },
+			     {
+			         "question": "Which type of testing ensures that recent changes have not introduced new issues in previously working code?",
+			         "answers": [
+			             "Regression Testing",
+			             "Unit Testing",
+			             "Integration Testing",
+			             "Acceptance Testing"
+			         ],
+			         "correct_ans": "Regression Testing",
+			         "difficulty": "1"
+			     },
+			     {
+			         "question": "What is the primary purpose of unit testing?",
+			         "answers": [
+			             "To validate individual components or units of code for correctness.",
+			             "To test how components interact with each other.",
+			             "To ensure the software meets user requirements.",
+			             "To evaluate system performance under heavy load."
+			         ],
+			         "correct_ans": "To validate individual components or units of code for correctness.",
+			         "difficulty": "1"
+			     },
+			     {
+			         "question": "What is a driver in the context of software testing?",
+			         "answers": [
+			             "A component that triggers and automates the execution of a test.",
+			             "A component that replaces unimplemented modules for simulation.",
+			             "A tool for project management and scheduling.",
+			             "A graphical interface for analyzing test results."
+			         ],
+			         "correct_ans": "A component that triggers and automates the execution of a test.",
+			         "difficulty": "2"
+			     },
+			     {
+			         "question": "In White Box Testing, what is a significant advantage?",
+			         "answers": [
+			             "It allows for the verification of all possible code paths and conditions.",
+			             "It requires no understanding of the code.",
+			             "It focuses solely on user experience testing.",
+			             "It does not require significant effort or time."
+			         ],
+			         "correct_ans": "It allows for the verification of all possible code paths and conditions.",
+			         "difficulty": "2"
+			     },
+			     {
+			         "question": "Which type of testing focuses on the functional behavior of a system without knowledge of the internal code structure?",
+			         "answers": [
+			             "Black Box Testing",
+			             "White Box Testing",
+			             "Unit Testing",
+			             "Integration Testing"
+			         ],
+			         "correct_ans": "Black Box Testing",
+			         "difficulty": "1"
+			     },
+			     {
+			         "question": "What is the primary focus of Integration Testing?",
+			         "answers": [
+			             "To verify the interaction between different system components.",
+			             "To evaluate the performance of individual units.",
+			             "To simulate user interactions with the system.",
+			             "To manage software version control."
+			         ],
+			         "correct_ans": "To verify the interaction between different system components.",
+			         "difficulty": "1"
+			     },
+			     {
+			         "question": "In the context of software testing, what is the purpose of Path Coverage?",
+			         "answers": [
+			             "To ensure all possible paths in the code are executed at least once.",
+			             "To evaluate the visual design of the software.",
+			             "To minimize the number of test cases needed.",
+			             "To validate only the main functionality of the application."
+			         ],
+			         "correct_ans": "To ensure all possible paths in the code are executed at least once.",
+			         "difficulty": "2"
+			     },
+			     {
+			         "question": "What is a common challenge of using automated testing tools?",
+			         "answers": [
+			             "High initial setup costs and the need for proper design and planning.",
+			             "Limited ability to test user interactions.",
+			             "Excessive manual intervention during execution.",
+			             "Incompatibility with modern programming languages."
+			         ],
+			         "correct_ans": "High initial setup costs and the need for proper design and planning.",
+			         "difficulty": "2"
+			     },
+			     {
+			         "question": "What is the main advantage of Black Box Testing?",
+			         "answers": [
+			             "It does not require knowledge of the internal code structure.",
+			             "It tests the software faster than other methods.",
+			             "It guarantees the absence of defects in the code.",
+			             "It is exclusively used for testing database systems."
+			         ],
+			         "correct_ans": "It does not require knowledge of the internal code structure.",
+			         "difficulty": "1"
+			     },
+			     {
+			         "question": "What does Statement Coverage ensure in software testing?",
+			         "answers": [
+			             "That every statement in the code is executed at least once.",
+			             "That every line of code is free from syntax errors.",
+			             "That the software meets the user's functional requirements.",
+			             "That the software passes all regression tests."
+			         ],
+			         "correct_ans": "That every statement in the code is executed at least once.",
+			         "difficulty": "2"
+			     }
+			 
+
+	
 ]
