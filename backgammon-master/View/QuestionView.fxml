@@ -24,8 +24,8 @@
             <Font name="Elephant" size="24.0" />
          </font>
       </Text>
-      <Label fx:id="questionLabel" contentDisplay="CENTER" layoutX="37.0" layoutY="144.0" prefHeight="51.0" prefWidth="450.0" text="Question" textAlignment="CENTER" />
-      <ImageView fitHeight="68.0" fitWidth="64.0" layoutX="465.0" layoutY="138.0" pickOnBounds="true" preserveRatio="true">
+      <Label fx:id="questionLabel" contentDisplay="CENTER" layoutX="25.0" layoutY="126.0" prefHeight="81.0" prefWidth="491.0" text="Question" textAlignment="CENTER" />
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="504.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../readme-resources/hourglass.png" />
          </image>

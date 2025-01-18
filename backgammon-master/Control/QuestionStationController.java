@@ -62,7 +62,7 @@ public class QuestionStationController {
     }
 
     private void startOrResetTimer() {
-        timeRemaining = 1800; // Reset timer to 30 minutes
+        timeRemaining = 60; // Reset timer to 30 minutes
         updateTimerLabel();
 
         if (timer != null) {

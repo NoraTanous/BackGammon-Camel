@@ -44,6 +44,8 @@ public class QAController {
 
     @FXML
     private Button backButton;
+    @FXML
+    private Button reloadButton;
 
     private ObservableList<Question> questionList;
     private QuestionManager questionManager;
@@ -54,6 +56,8 @@ public class QAController {
     }
     @FXML
     public void initialize() {
+    	 // Initialize questionList
+        questionList = FXCollections.observableArrayList();
         // Add a listener to wait for the scene to be fully initialized
         questionTable.sceneProperty().addListener((observable, oldScene, newScene) -> {
             if (newScene != null) {
@@ -64,37 +68,45 @@ public class QAController {
 
 
     private void handleAuthorization() {
-    	
-    	  System.out.println("QAController initialized. isAdminAuthorized = " + isAdminAuthorized);
-          if (!isAdminAuthorized) {
-              showAlert("Access Denied", "You do not have permission to access this page.");
-              closeWindow();
-          } else {
-           
-    	// Get a writable file path for the questions
-        Path filePath = QuestionManager.getWritableFilePath();
+        System.out.println("QAController initialized. isAdminAuthorized = " + isAdminAuthorized);
 
-        // Initialize QuestionManager with the writable path
-        questionManager = new QuestionManager(filePath);
+        if (!isAdminAuthorized) {
+            showAlert("Access Denied", "You do not have permission to access this page.");
+            closeWindow();
+            return;
+        }
 
-        // Load questions into an observable list and set it to the table
-        questionList = FXCollections.observableArrayList(questionManager.getQuestions());
+        if (questionManager == null) {
+        	questionManager = QuestionManager.getInstance();
+
+        }
+        System.out.println("Using JSON file: " + QuestionManager.getWritableFilePath());
+
+        // Ensure questionList is initialized
+        if (questionList == null) {
+            questionList = FXCollections.observableArrayList();
+        }
+
+        // Load questions into the observable list
+        questionList.setAll(questionManager.getQuestions());
+        System.out.println("Loaded questions: " + questionList);
+
+        // Bind to the TableView
         questionTable.setItems(questionList);
-        // Set up the columns
+        questionTable.refresh();
+
+        // Configure table columns (existing code)
         questionColumn.setCellValueFactory(cellData -> cellData.getValue().questionTextProperty());
         answersColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(String.join(", ", cellData.getValue().getAnswers())));
         difficultyColumn.setCellValueFactory(cellData -> cellData.getValue().difficultyProperty());
 
-        // Set up action buttons (Edit and Delete) in the Actions column
+        // Configure actions (existing code)
         actionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
 
             {
-                // Configure Edit button action
                 editButton.setOnAction(event -> editQuestion(getTableRow().getItem()));
-
-                // Configure Delete button action
                 deleteButton.setOnAction(event -> deleteQuestion(getTableRow().getItem()));
             }
 
@@ -111,12 +123,11 @@ public class QAController {
             }
         });
 
-        // Configure Add button action
+        // Set button actions (existing code)
         addButton.setOnAction(event -> addQuestion());
-
-        // Configure Back button action
         backButton.setOnAction(event -> backToMenu());
-    }}
+    }
+
     private void closeWindow() {
         Stage stage = (Stage) questionTable.getScene().getWindow();
         stage.close();
@@ -231,14 +242,15 @@ public class QAController {
 
         // Show the dialog and handle the result
         dialog.showAndWait().ifPresent(newQuestion -> {
-            // Add the new question to the ObservableList for the UI
-            questionList.add(newQuestion);
-
-            // Add the new question to the QuestionManager
+        	// Add to QuestionManager
             questionManager.addQuestion(newQuestion);
 
-            // Save all changes to the JSON file
-            saveQuestionsToJson();
+            // Synchronize ObservableList with QuestionManager
+            questionList.setAll(questionManager.getQuestions());
+
+            // Save to JSON and refresh TableView
+            questionManager.saveQuestionsToJson();
+            questionTable.refresh();
 
             // Show success message
             Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -313,6 +325,8 @@ public class QAController {
 
                 // Remove question from the QuestionManager
                 questionManager.removeQuestion(question);
+                questionList.setAll(questionManager.getQuestions());
+                questionTable.refresh();
 
                 // Save changes to the JSON file
                 saveQuestionsToJson();
@@ -337,6 +351,14 @@ public class QAController {
             errorAlert.showAndWait();
             return;
         }
+
+        // Save the original question as oldQuestion
+        Question oldQuestion = new Question(
+                question.getQuestionText(),
+                new ArrayList<>(question.getAnswers()),
+                question.getCorrectAnswer(),
+                question.getDifficulty()
+        );
 
         // Open a dialog for editing the question
         TextInputDialog questionDialog = new TextInputDialog(question.getQuestionText());
@@ -375,11 +397,18 @@ public class QAController {
         difficultyDialog.setContentText("Difficulty:");
         difficultyDialog.showAndWait().ifPresent(question::setDifficulty);
 
-        // Refresh the TableView to reflect updated data
-        questionTable.refresh();
+        // Use question as updatedQuestion after edits
+        Question updatedQuestion = question;
 
-        // Save the updated question list to JSON
-        saveQuestionsToJson();
+        // Update the question in QuestionManager
+        questionManager.updateQuestion(oldQuestion, updatedQuestion);
+
+        // Synchronize ObservableList with QuestionManager
+        questionList.setAll(questionManager.getQuestions());
+
+        // Save to JSON and refresh TableView
+        questionManager.saveQuestionsToJson();
+        questionTable.refresh();
 
         // Show success alert
         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -387,6 +416,13 @@ public class QAController {
         successAlert.setHeaderText(null);
         successAlert.setContentText("The question has been updated successfully.");
         successAlert.showAndWait();
+    }
+    @FXML
+    private void reloadQuestions() {
+        questionManager = new QuestionManager(QuestionManager.getWritableFilePath());
+        questionList.setAll(questionManager.getQuestions());
+        questionTable.refresh();
+        System.out.println("Questions reloaded from JSON file.");
     }
 
 
