@@ -3,7 +3,8 @@ package Control;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 import constants.DieInstance;
 import constants.GameEndScore;
 import constants.MessageType;
@@ -182,15 +183,37 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	 * Auto roll die to see which player moves first.
 	 * Called at /start.
 	 */
+
+
 	public void start() {
-		isStarted = true;
-		startGame(topPlayer, bottomPlayer);
-		
-		// facial expressions.
-		game.getEmojiOfPlayer(pCurrent.getColor()).setThinkingFace();
-		game.getEmojiOfPlayer(pOpponent.getColor()).setThinkingFace();
-		
+	    isStarted = true;
+	    infoPnl.print("Preparing to roll the dice... Please wait.");
+
+	    // Create a PauseTransition with a delay of 3 seconds.
+	    PauseTransition pause = new PauseTransition(Duration.seconds(2));
+	    pause.setOnFinished(event -> {
+	        // Roll dice after the delay.
+	        DieResults initialRoll = game.getBoard().rollDices(DieInstance.SINGLE);
+	        Player firstPlayer = getFirstPlayerToRoll(initialRoll);
+	        Player secondPlayer = getSecondPlayerToRoll(firstPlayer);
+
+	        if (firstPlayer == null) {
+	            infoPnl.print("Players rolled the same value. Rolling again...");
+	            start(); // Restart the process for a tie.
+	            return;
+	        }
+
+	        startGame(firstPlayer, secondPlayer);
+
+	        // Set thinking face emojis for both players.
+	        game.getEmojiOfPlayer(pCurrent.getColor()).setThinkingFace();
+	        game.getEmojiOfPlayer(pOpponent.getColor()).setThinkingFace();
+	    });
+
+	    // Start the delay.
+	    pause.play();
 	}
+
 	
 	/**
 	 * Rolls die, calculates possible moves and highlight top checkers.
