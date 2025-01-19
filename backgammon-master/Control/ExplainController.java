@@ -3,6 +3,7 @@ package Control;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class ExplainController {
@@ -52,6 +53,16 @@ public class ExplainController {
 
     private void closeWindow() {
         Stage stage = (Stage) backButton.getScene().getWindow();
+        setCustomIcon(stage);
         stage.close();
+    }
+    private void setCustomIcon(Stage stage) {
+        try {
+            // Load the custom icon
+            Image icon = new Image(getClass().getResourceAsStream("/img/backgammon.png")); // Replace with your actual icon path
+            stage.getIcons().add(icon); // Add the icon to the stage
+        } catch (Exception e) {
+            System.err.println("Error loading custom icon: " + e.getMessage());
+        }
     }
 }

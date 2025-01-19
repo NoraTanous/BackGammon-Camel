@@ -3,8 +3,6 @@ package Control;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javafx.animation.PauseTransition;
-import javafx.util.Duration;
 
 import constants.DieInstance;
 import constants.GameEndScore;
@@ -20,6 +18,7 @@ import Model.RollMoves;
 import Model.TouchablesStorer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.util.Duration;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
@@ -49,7 +48,7 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	private boolean isMaxDoubling;
 	private boolean isInTransition;
 	private Player bottomPlayer, topPlayer, pCurrent, pOpponent;
-	 private List<GameHistory> gameHistoryList = new ArrayList<>();
+	private List<GameHistory> gameHistoryList = new ArrayList<>();
 	private Stage stage;
 	private MatchController root;
 	private CommandController cmd;
@@ -57,20 +56,45 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	private InfoPanel infoPnl;
 	private GameplayMovesController gameplayMoves;
 	private TouchablesStorer storerSelected;
-	 boolean hasExtraRound = false;
+	boolean hasExtraRound = false;
 
 	
-	public GameplayController(Stage stage, MatchController root, GameComponentsController game, InfoPanel infoPnl, Player bottomPlayer, Player topPlayer) {
-		this.bottomPlayer = bottomPlayer;
-		this.topPlayer = topPlayer;
-		this.stage = stage;
-		this.root = root;
-		this.game = game;
-		this.infoPnl = infoPnl;
-		gameplayMoves = new GameplayMovesController(game, this, infoPnl);
-		reset();
-		
-	}
+	 public GameplayController(Stage stage, MatchController root, GameComponentsController game, InfoPanel infoPnl, Player bottomPlayer, Player topPlayer) {
+		    this.bottomPlayer = bottomPlayer;
+		    this.topPlayer = topPlayer;
+		    this.stage = stage;
+		    this.root = root;
+		    this.game = game;
+		    this.infoPnl = infoPnl;
+		    gameplayMoves = new GameplayMovesController(game, this, infoPnl);
+		    reset();
+
+		    // Handle the X button click
+		    stage.setOnCloseRequest(event -> {
+		        event.consume(); // Prevent default close behavior
+		        System.out.println("Game window is closing. Saving current game state...");
+		        handleWindowClose(); // Call the window close logic
+		    });
+		}
+	 public boolean isListenerActive() {
+		    return stage != null && stage.isShowing();
+		}
+	 private void handleWindowClose() {
+		    if (cmd != null) {
+		        System.out.println("Invoking /quit command...");
+		        cmd.runCommand("/quit"); // Call the /quit logic
+		    } else {
+		        System.out.println("CommandController is not initialized. Exiting directly...");
+		        handleGameCompletion(false); // Save incomplete game state
+		        Platform.exit();
+		        System.exit(0);
+		    }
+		}
+
+
+
+	 
+
 	
 	public void reset() {
 		isStarted = false;
@@ -86,19 +110,33 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 		gameplayMoves.reset();
 		stopCurrentPlayerTimer();
 	}
-	private void saveGameHistory() {
-	    String playerOne = bottomPlayer.getName();
-	    String playerTwo = topPlayer.getName();
-	    int scorePlayerOne = bottomPlayer.getScore();
-	    int scorePlayerTwo = topPlayer.getScore();
-	    String winner = (scorePlayerOne > scorePlayerTwo) ? playerOne : playerTwo;
+	private void handleQuitOnClose() {
+	    System.out.println("Quitting game via window close...");
+	    try {
+	        handleGameCompletion(false); // Save incomplete game
+	    } catch (Exception e) {
+	        System.err.println("Error saving game state: " + e.getMessage());
+	    }
+	    Platform.exit(); // Close the JavaFX application
+	    System.exit(0);  // Ensure application terminates
+	}
 
+	private void saveGameHistory() {
+	    String playerOne = bottomPlayer != null ? bottomPlayer.getName() : "Unknown Player";
+	    String playerTwo = topPlayer != null ? topPlayer.getName() : "Unknown Player";
+	    Integer scorePlayerOne = bottomPlayer != null ? bottomPlayer.getScore() : null; // Allow null if game incomplete
+	    Integer scorePlayerTwo = topPlayer != null ? topPlayer.getScore() : null; // Allow null if game incomplete
+	    String winner = (scorePlayerOne != null && scorePlayerTwo != null)
+	            ? (scorePlayerOne > scorePlayerTwo ? playerOne : scorePlayerTwo > scorePlayerOne ? playerTwo : "Draw")
+	            : null; // Set to null for incomplete games
+
+	    // Create a GameHistory object
 	    GameHistory history = new GameHistory(playerOne, playerTwo, scorePlayerOne, scorePlayerTwo, winner);
 
 	    // Load existing history
 	    List<GameHistory> historyList = GameHistoryJsonUtil.loadHistory();
 
-	    // Add new entry
+	    // Add the new entry
 	    historyList.add(history);
 
 	    // Save updated history to file
@@ -106,6 +144,9 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 
 	    System.out.println("Game history saved: " + history);
 	}
+
+
+
 
 	  public void moveChecker(Checker checker, Pip targetPip) {
 	        System.out.println("Moving checker to Pip: " + targetPip.getPipNumber());
@@ -141,37 +182,15 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	 * Auto roll die to see which player moves first.
 	 * Called at /start.
 	 */
-
 	public void start() {
-	    isStarted = true;
-	    infoPnl.print("Preparing to roll the dice... Please wait.");
-
-	    // Create a PauseTransition with a delay of 3 seconds.
-	    PauseTransition pause = new PauseTransition(Duration.seconds(3));
-	    pause.setOnFinished(event -> {
-	        // Roll dice after the delay.
-	        DieResults initialRoll = game.getBoard().rollDices(DieInstance.SINGLE);
-	        Player firstPlayer = getFirstPlayerToRoll(initialRoll);
-	        Player secondPlayer = getSecondPlayerToRoll(firstPlayer);
-
-	        if (firstPlayer == null) {
-	            infoPnl.print("Players rolled the same value. Rolling again...");
-	            start(); // Restart the process for a tie.
-	            return;
-	        }
-
-	        startGame(firstPlayer, secondPlayer);
-
-	        // Set thinking face emojis for both players.
-	        game.getEmojiOfPlayer(pCurrent.getColor()).setThinkingFace();
-	        game.getEmojiOfPlayer(pOpponent.getColor()).setThinkingFace();
-	    });
-
-	    // Start the delay.
-	    pause.play();
+		isStarted = true;
+		startGame(topPlayer, bottomPlayer);
+		
+		// facial expressions.
+		game.getEmojiOfPlayer(pCurrent.getColor()).setThinkingFace();
+		game.getEmojiOfPlayer(pOpponent.getColor()).setThinkingFace();
+		
 	}
-
-
 	
 	/**
 	 * Rolls die, calculates possible moves and highlight top checkers.
@@ -269,10 +288,10 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	        isMoved = true;
 	        infoPnl.print("Move over.");
 
-	        // Check if an extra turn is granted
+	        // Handle extra turn logic
 	        if (hasExtraRound) {
 	            infoPnl.print(pCurrent.getName() + " has an extra turn! Roll the dice again.", MessageType.ANNOUNCEMENT);
-	            hasExtraRound = false; // Reset the extra turn flag for this round
+	            hasExtraRound = false; // Reset the extra turn flag
 	            isRolled = false; // Allow rolling again
 	            isMoved = false; // Allow moving again
 	            recalculateMoves(); // Refresh moves for the extra turn
@@ -284,6 +303,7 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	        gameplayMoves.printMoves();
 	    }
 	}
+
 
 	
 	private void updateMovesAfterMoving() {
@@ -326,13 +346,13 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	public Player next() {
 	    if (hasExtraRound) {
 	        infoPnl.print(pCurrent.getName() + " continues for the extra round.");
-	        hasExtraRound = false; // Reset the flag
-	        isRolled = false; // Reset the rolled flag to allow dice roll
-	        isMoved = false; // Reset the moved flag to allow player actions
-	        return pCurrent; // Do not swap players
+	        hasExtraRound = false; // Reset the extra turn flag
+	        isRolled = false; // Allow dice roll again
+	        isMoved = false; // Allow actions again
+	        return pCurrent; // Do not switch players
 	    }
 
-	    // Existing logic for swapping turns
+	    // Swap players if no extra turn is granted
 	    isRolled = false;
 	    isMoved = false;
 	    stopCurrentPlayerTimer();
@@ -347,10 +367,15 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	        nextPause.setCycleCount(1);
 	        nextPause.play();
 	        isInTransition = true;
-	    } else nextFunction();
+	    } else {
+	        nextFunction();
+	    }
 
 	    return pCurrent;
 	}
+
+
+
 
 	public void nextFunction() {
 		if (isDoubling()) stopCurrentPlayerTimer();
@@ -503,8 +528,8 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	    if (isIntermediate) swapPlayers();
 	    handleGameOverScore(isIntermediate);
 
-	    // Save the game history after determining the game outcome
-	    saveGameHistory();
+	 // Save the game history
+	    handleGameCompletion(true); // Mark game as complete
 
 	    if (root.isMatchOver())
 	        root.handleMatchOver();
@@ -524,6 +549,7 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 
 	        // Auto save game log.
 	        infoPnl.saveToFile();
+	        
 
 	        // Output to dialog prompt.
 	        Optional<ButtonType> result = dialog.showAndWait();
@@ -539,6 +565,7 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
 	        }
 	    }
 	}
+	
 
 	public void handleGameOver() {
 		handleGameOver(false);
@@ -657,17 +684,12 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
         next(); // Pass turn to the next player.
     }
     public void grantExtraTurn() {
-        infoPnl.print(pCurrent.getName() + " earned an extra round! Complete this round and play again.");
-        hasExtraRound = true; // Flag for extra round
+        infoPnl.print(pCurrent.getName() + " earned an extra turn! Complete this round and play again.", MessageType.ANNOUNCEMENT);
+        hasExtraRound = true; // Set the flag for an extra turn
         isRolled = false; // Allow dice roll
         isMoved = false; // Allow moves
-
-        // Ensure the same checker is retained for the extra round
-        Checker currentChecker = getCurrentChecker();
-        if (currentChecker != null) {
-            infoPnl.print("Extra turn granted with the same checker.");
-        }
     }
+
 
 
     public Checker getCurrentChecker() {
@@ -704,4 +726,46 @@ public class GameplayController implements ColorParser, ColorPerspectiveParser, 
             }
         }
     }
+    public void handleGameCompletion(boolean isGameComplete) {
+        String playerOne = bottomPlayer != null && bottomPlayer.getName() != null ? bottomPlayer.getName() : "Unknown Player";
+        String playerTwo = topPlayer != null && topPlayer.getName() != null ? topPlayer.getName() : "Unknown Player";
+
+        // Use default values (e.g., 0 or null) for incomplete games
+        Integer scorePlayerOne = isGameComplete && bottomPlayer != null ? bottomPlayer.getScore() : 0;
+        Integer scorePlayerTwo = isGameComplete && topPlayer != null ? topPlayer.getScore() : 0;
+
+        // Determine the winner only if both scores are available
+        String winner;
+        if (scorePlayerOne != null && scorePlayerTwo != null) {
+            if (scorePlayerOne > scorePlayerTwo) {
+                winner = playerOne;
+            } else if (scorePlayerTwo > scorePlayerOne) {
+                winner = playerTwo;
+            } else {
+                winner = "Draw";
+            }
+        } else {
+            winner = "Incomplete Game"; // Default for incomplete games
+        }
+
+        // Log debug info
+        System.out.println("Player One: " + playerOne + ", Score: " + scorePlayerOne);
+        System.out.println("Player Two: " + playerTwo + ", Score: " + scorePlayerTwo);
+        System.out.println("Winner: " + winner);
+
+        // Save game history
+        try {
+            GameHistory gameHistory = new GameHistory(playerOne, playerTwo, scorePlayerOne, scorePlayerTwo, winner);
+            GameHistoryJsonUtil.saveGameHistory(gameHistory);
+            System.out.println("Game history saved successfully.");
+        } catch (Exception e) {
+            System.err.println("Error saving game history: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+
+    
+    
 }

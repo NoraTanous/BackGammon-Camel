@@ -5,6 +5,7 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,8 +32,7 @@ public class QuestionStationController {
     private Stage questionStage;
     private GameplayController gameplayController;
     private Timeline timer;
-    private int timeRemaining = 30; // Default time in seconds
-
+    private int timeRemaining = 1800; // 30 minutes in seconds
     public void setQuestionData(Question question, Stage stage, GameplayController gameplayController) {
         this.questionStage = stage;
         this.gameplayController = gameplayController;
@@ -58,10 +58,11 @@ public class QuestionStationController {
 
         // Start or reset the timer
         startOrResetTimer();
+        setCustomIcon(stage); // Add this line
     }
 
     private void startOrResetTimer() {
-        timeRemaining = 30; // Reset timer to 30 seconds
+        timeRemaining = 60; // Reset timer to 30 minutes
         updateTimerLabel();
 
         if (timer != null) {
@@ -82,8 +83,11 @@ public class QuestionStationController {
     }
 
     private void updateTimerLabel() {
-        timerLabel.setText("Time Left: " + timeRemaining + " seconds");
+        int minutes = timeRemaining / 60;
+        int seconds = timeRemaining % 60;
+        timerLabel.setText(String.format("Time Left: %02d:%02d", minutes, seconds));
     }
+
 
     public void handleAnswer(String answer) {
         if (timer != null) {
@@ -108,6 +112,14 @@ public class QuestionStationController {
         }
         questionStage.close(); // Close the question window
         gameplayController.passTurnToNextPlayerDueToQuestionFailure(); // Pass turn on timeout
-        
+    }
+    private void setCustomIcon(Stage stage) {
+        try {
+            // Load the custom icon
+            Image icon = new Image(getClass().getResourceAsStream("/img/backgammon.png")); // Replace with your actual icon path
+            stage.getIcons().add(icon); // Add the icon to the stage
+        } catch (Exception e) {
+            System.err.println("Error loading custom icon: " + e.getMessage());
+        }
     }
 }

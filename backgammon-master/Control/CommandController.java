@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,6 +32,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -754,9 +758,27 @@ public class CommandController implements ColorParser, InputValidator, IndexOffs
 	 * Command: /quit
 	 * Saves game log and prompts player to quit before quitting application.
 	 */
-	private void runQuitCommand() {
-		stage.fireEvent(new WindowEvent(infoPnl.getScene().getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
+	public void runQuitCommand() {
+	    Platform.runLater(() -> {
+	        Alert alert = new Alert(AlertType.CONFIRMATION);
+	        alert.setTitle("Quit Game");
+	        alert.setHeaderText("Are you sure you want to quit?");
+	        alert.setContentText("Unsaved progress may be lost.");
+
+	        Optional<ButtonType> result = alert.showAndWait();
+	        if (result.isPresent() && result.get() == ButtonType.OK) {
+	            try {
+	                gameplay.handleGameCompletion(false); // Mark game as incomplete
+	            } catch (Exception e) {
+	                System.err.println("Error saving game completion: " + e.getMessage());
+	            }
+	            stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+	        } else {
+	            infoPnl.print("Quit canceled.", MessageType.INFO);
+	        }
+	    });
 	}
+
 	
 	private void runMusicCommand(String[] args) {
 		if (args.length != 2) {

@@ -77,4 +77,5 @@ public class CommandPanel extends TextField {
 		history.reset();
 		redraw();
 	}
+	
 }

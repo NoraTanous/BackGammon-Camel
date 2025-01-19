@@ -51,7 +51,7 @@ import javafx.stage.WindowEvent;
 import View.CommandPanel;
 import View.InfoPanel;
 import View.RollDieButton;
-
+//ddddddddddddd
 /**
  * This class handles all the events that is triggered by the user.
  * Sub-controller of MainController.
@@ -62,6 +62,7 @@ import View.RollDieButton;
  * @author Braddy Yeoh, 17357376
  *
  */
+////////dd///d//d/dd
 public class EventController implements ColorParser, ColorPerspectiveParser, InputValidator{
 	private Stage stage;
 	private MatchController root;
@@ -160,7 +161,7 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 	    });
 	}*/
 
-	private boolean handleSurpriseStation(Pip pip, Checker checker) {
+	/*private boolean handleSurpriseStation(Pip pip, Checker checker) {
 	    if (!pip.hasProcessedSurprise(checker)) {
 	        pip.setProcessedSurprise(checker, true); // Mark as processed
 
@@ -177,7 +178,7 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 	                Scene scene = new Scene(root);
 	                stage.setScene(scene);
 
-	                // Timer to automatically close the Surprise Station
+	                // Set a timer to auto-close the popup
 	                Timer timer = new Timer();
 	                timer.schedule(new TimerTask() {
 	                    @Override
@@ -186,28 +187,51 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 	                            if (stage.isShowing()) {
 	                                controller.closeSurpriseStation();
 	                                stage.close();
-	                                setExtraTurnAfterSurpriseStation(); // Handle extra turn logic here
 	                            }
 	                            timer.cancel();
 	                        });
 	                    }
-	                }, 10000); // Close after 10 seconds
+	                }, 10000); // Auto-close after 10 seconds
 
+	                // Handle manual close
 	                stage.setOnCloseRequest(event -> {
 	                    timer.cancel();
-	                    setExtraTurnAfterSurpriseStation(); // Ensure extra turn is set even if closed manually
+	                    controller.closeSurpriseStation();
 	                });
 
 	                stage.showAndWait();
-	            } catch (Exception e) {
+	            } catch (IOException e) {
 	                e.printStackTrace();
 	            }
 	        });
 
-	        return true; // Successfully processed the Surprise Station
+	        return true; // Successfully processed
 	    }
-	    return false; // Surprise Station was already processed
+	    return false; // Already processed
+	}*/
+	private boolean handleSurpriseStation(Pip pip, Checker checker) {
+	    infoPnl.print("DEBUG: handleSurpriseStation invoked.", MessageType.DEBUG);
+	    Platform.runLater(() -> {
+	        try {
+	            FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/StationView.fxml"));
+	            Parent root = loader.load();
+	            Stage stage = new Stage();
+	            stage.initModality(Modality.APPLICATION_MODAL);
+	            stage.setTitle("Surprise Station");
+
+	            Scene scene = new Scene(root);
+	            stage.setScene(scene);
+	            stage.showAndWait();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            infoPnl.print("Error loading FXML: " + e.getMessage(), MessageType.ERROR);
+	        }
+	    });
+	    return true;
 	}
+
+
+
 
 	private void setExtraTurnAfterSurpriseStation() {
 	    infoPnl.print("You earned an extra turn after completing your current moves!", MessageType.ANNOUNCEMENT);
@@ -338,47 +362,38 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 	private boolean showQuestionPopup(Question question) {
 	    final boolean[] result = {false}; // Store the result of the question
 
-	    // Create the main layout for the popup
-	    VBox layout = new VBox(10);
-	    layout.setPadding(new Insets(10));
-	    layout.setAlignment(Pos.CENTER);
+	    try {
+	        // Load the FXML layout
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/QuestionView.fxml")); // Update the path if needed
+	        Parent root = loader.load();
 
-	    // Add a label for the question
-	    Label questionLabel = new Label(question.getQuestionText());
-	    questionLabel.setWrapText(true);
-	    questionLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+	        // Get the controller from the FXML loader
+	        QuestionStationController controller = loader.getController();
 
-	    // Create buttons for each answer
-	    List<Button> answerButtons = new ArrayList<>();
-	    for (String answer : question.getAnswers()) {
-	        Button button = new Button(answer);
-	        button.setMaxWidth(Double.MAX_VALUE);
-	        button.setOnAction(e -> {
-	            if (answer.equals(question.getCorrectAnswer())) {
-	                result[0] = true; // Correct answer
-	            }
-	            Stage stage = (Stage) button.getScene().getWindow();
-	            stage.close(); // Close the popup
-	        });
-	        answerButtons.add(button);
+	        // Create a new stage for the popup
+	        Stage questionStage = new Stage();
+	        questionStage.initModality(Modality.APPLICATION_MODAL); // Block the main game window
+	        questionStage.setTitle("Question Station");
+
+	        // Pass the question data to the controller
+	        controller.setQuestionData(question, questionStage, gameplay);
+
+	        // Set the scene and display the popup
+	        Scene scene = new Scene(root);
+	        questionStage.setScene(scene);
+	        questionStage.showAndWait(); // Wait for the popup to close
+
+	        // Get the result from the controller
+	        result[0] = QuestionStationController.isCorrectAnswerd;
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        infoPnl.print("Error loading the QuestionView: " + e.getMessage(), MessageType.ERROR);
 	    }
-
-	    // Add components to the layout
-	    layout.getChildren().add(questionLabel);
-	    layout.getChildren().addAll(answerButtons);
-
-	    // Create a scene and stage for the popup
-	    Scene scene = new Scene(layout, 400, 300);
-	    Stage popupStage = new Stage();
-	    popupStage.setTitle("Question Station");
-	    popupStage.initModality(Modality.APPLICATION_MODAL); // Block the main game window
-	    popupStage.setScene(scene);
-
-	    // Show the popup and wait
-	    popupStage.showAndWait();
 
 	    return result[0]; // Return whether the answer was correct
 	}
+
 
 
 	/**
@@ -459,23 +474,24 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 			            }
 				        if (gameplay.getValidMoves().isValidFro(fromPip)) { // Check if the source pip is valid
 		                // After move, check if the destination pip is a Surprise Station
-			            if (selectedPip.isSurpriseStation()) {
-			                Checker checker = getCurrentChecker();
-			                if (checker != null) {
-			                    boolean isProcessed = handleSurpriseStation(selectedPip, checker);
-			                    if (isProcessed) {
-			                        infoPnl.print("Surprise Station processed! Enjoy your surprise!", MessageType.ANNOUNCEMENT);
-			                        gameplay.hasExtraRound = true;
-			                    } else {
-			                        infoPnl.print("Surprise Station already processed.", MessageType.INFO);
-			                    }
-			                }
-			            }
+				        	if (selectedPip.isSurpriseStation()) {
+				        	    infoPnl.print("Player landed on a Surprise Station.", MessageType.DEBUG); // Log
+				        	    Checker checker = getCurrentChecker();
+				        	    if (checker != null) {
+				        	        boolean isProcessed = handleSurpriseStation(selectedPip, checker);
+				        	        if (isProcessed) {
+				        	            infoPnl.print("Surprise Station processed! Enjoy your surprise!", MessageType.ANNOUNCEMENT);
+				        	            gameplay.hasExtraRound = true;
+				        	        } else {
+				        	            infoPnl.print("Surprise Station already processed.", MessageType.INFO);
+				        	        }
+				        	    } else {
+				        	        infoPnl.print("No checker available for the Surprise Station.", MessageType.ERROR); // Log error
+				        	    }
+				        	}
+
 				            }
-
-
-
-		             
+				       
 			        } else {
 			            infoPnl.print("You cannot move from this pip. It is not a valid starting point.", MessageType.ERROR);
 			        }

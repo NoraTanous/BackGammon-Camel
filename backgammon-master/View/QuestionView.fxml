@@ -8,23 +8,29 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Control.QuestionStationController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="458.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Control.QuestionStationController">
    <children>
-      <Button fx:id="option1Button" layoutX="300.0" layoutY="169.0" mnemonicParsing="false" prefHeight="89.0" prefWidth="235.0" text="Option 1" />
-      <Button fx:id="option2Button" layoutX="11.0" layoutY="169.0" mnemonicParsing="false" prefHeight="89.0" prefWidth="235.0" text="Option 2" />
-      <Button fx:id="option3Button" layoutX="11.0" layoutY="277.0" mnemonicParsing="false" prefHeight="89.0" prefWidth="235.0" text="Option 3" />
-      <Button fx:id="option4Button" layoutX="300.0" layoutY="277.0" mnemonicParsing="false" prefHeight="89.0" prefWidth="235.0" text="Option 4" />
-      <Text layoutX="33.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="YOU HAVE REACHED THE QUESTION STATION!" textAlignment="CENTER" wrappingWidth="515.4700012207031">
+      <ImageView fitHeight="512.0" fitWidth="607.0" layoutX="-33.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/Subject.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="option1Button" layoutX="37.0" layoutY="218.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="467.0" text="Option 1" />
+      <Button fx:id="option2Button" layoutX="37.0" layoutY="263.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="467.0" text="Option 2" />
+      <Button fx:id="option3Button" layoutX="37.0" layoutY="313.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="467.0" text="Option 3" />
+      <Button fx:id="option4Button" layoutX="37.0" layoutY="367.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="467.0" text="Option 4" />
+      <Text layoutX="9.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="YOU HAVE REACHED THE QUESTION STATION!" textAlignment="CENTER" wrappingWidth="505.8033142089844">
          <font>
-            <Font size="24.0" />
+            <Font name="Elephant" size="24.0" />
          </font>
       </Text>
-      <Label fx:id="questionLabel" contentDisplay="CENTER" layoutX="14.0" layoutY="82.0" prefHeight="63.0" prefWidth="475.0" text="Question" textAlignment="CENTER" />
-      <ImageView fitHeight="78.0" fitWidth="94.0" layoutX="509.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true">
+      <Label fx:id="questionLabel" contentDisplay="CENTER" layoutX="25.0" layoutY="126.0" prefHeight="81.0" prefWidth="491.0" text="Question" textAlignment="CENTER" />
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="504.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../readme-resources/hourglass.png" />
          </image>
       </ImageView>
-      <Label fx:id="timerLabel" layoutX="500.0" layoutY="105.0" prefHeight="23.0" prefWidth="22.0" text="30" />
+      <Label fx:id="timerLabel" layoutX="423.0" layoutY="109.0" text="Time Left: 30:00" />
+      
    </children>
 </AnchorPane>

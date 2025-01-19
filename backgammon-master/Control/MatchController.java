@@ -1,5 +1,6 @@
 package Control;
 
+import java.io.InputStream;
 import java.util.Optional;
 
 import constants.GameConstants;
@@ -10,11 +11,20 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Lighting;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -24,6 +34,8 @@ import View.InfoPanel;
 import View.RollDieButton;
 import View.ScoreboardPrompt;
 import View.Dialogs;
+import javafx.scene.control.ButtonBar;
+
 
 /**
  * This class represents the entire component of the application,
@@ -52,6 +64,8 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	private Stage stage;
 	private boolean isPlayerInfosEnteredFirstTime, isPromptCancel, hadCrawfordGame, isCrawfordGame;
     private String level; // To store the current level
+    private Button muteButton; // Mute button
+    private boolean isMuted = false; // Tracks mute state
 
 	
 	/**
@@ -64,7 +78,15 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	public MatchController(Stage stage,String level) {
 		super();
 		this.stage = stage;
+		setCustomIcon();
+		
+
 		setLevel(level);
+		 // Apply the lighting effects based on the level
+		style();
+	    applyLightingEffects(level); // Call it here to set the visual effect
+	   
+
 		initApplication();
 		if(this.level.equals("Easy")) {
 		initGame();
@@ -75,8 +97,53 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 		if(this.level.equals("Hard")) {
 			initHardGame();
 		}
-		style();
+		
+		// Add the close request handler
+	    stage.setOnCloseRequest(event -> {
+	        event.consume(); // Prevent the default close operation
+	        handleWindowClose(); // Invoke custom logic
+	    });
 	}
+	private void handleWindowClose() {
+	    // Create a confirmation alert
+	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+	    alert.setTitle("Confirm Quit");
+	    alert.setHeaderText("Are you sure you want to quit?");
+	    alert.setContentText("Any unsaved progress will be lost.");
+
+	    // Add Yes and No buttons
+	    ButtonType yesButton = new ButtonType("Yes");
+	    ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+	    alert.getButtonTypes().setAll(yesButton, noButton);
+
+	    // Show the dialog and wait for the user response
+	    Optional<ButtonType> result = alert.showAndWait();
+	    if (result.isPresent() && result.get() == yesButton) {
+	        System.out.println("User confirmed quit. Exiting...");
+	        try {
+	            gameplay.handleGameCompletion(false); // Save the game state
+	            Platform.exit(); // Close the JavaFX application
+	            System.exit(0);  // Ensure JVM termination
+	        } catch (Exception e) {
+	            System.err.println("Error during window close: " + e.getMessage());
+	            e.printStackTrace();
+	        }
+	    } else {
+	        System.out.println("User canceled quit. Returning to game.");
+	    }
+	}
+	 private void setCustomIcon() {
+	        // Load the icon from resources
+	        try {
+	            Image icon = new Image(getClass().getResourceAsStream("/img/backgammon.png")); // Replace with your icon path
+	            stage.getIcons().add(icon);
+	        } catch (Exception e) {
+	            System.err.println("Error loading icon: " + e.getMessage());
+	        }
+	    }
+	
+
+
 	public void setLevel(String level) {
         this.level = level;
         configureLevelSettings();
@@ -294,25 +361,53 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	 * 		- Players can NOT have negative or even totalGames.
 	 */
 	void promptStartGame() {
-		// Create dialog.
-		Dialogs<promptResults> dialog = new Dialogs<promptResults>("Please enter player names and number of games to play", stage, "Start");
-		
-		// Create dialog contents.
-		ScoreboardPrompt contents = new ScoreboardPrompt();
-		
-		// Add contents to dialog.
-		dialog.getDialogPane().setContent(contents);
-		
-		// On click start button, return player names as result.
-		// Else result is null, cancel the game.
-		dialog.setResultConverter(click -> {
-			if (click == dialog.getButton())
-				return new promptResults(contents.getPlayerInput("black"), contents.getPlayerInput("white"), contents.getPlayerInput("score"));
-			return null;
-		});
-		
-		// Show dialog to get player input.
-		Optional<promptResults> result = dialog.showAndWait();
+		 // Create dialog.
+	    Dialogs<promptResults> dialog = new Dialogs<promptResults>("Please enter player names and number of games to play", stage, "Start");
+
+	    // Create dialog contents.
+	    ScoreboardPrompt contents = new ScoreboardPrompt();
+
+	    // Add contents to dialog.
+	    dialog.getDialogPane().setContent(contents);
+
+	    // Load the background image.
+	    InputStream stream = getClass().getResourceAsStream("/img/IMG_4098.JPG");
+	    if (stream == null) {
+	        System.err.println("Resource not found: /img/IMG_4098.JPG");
+	        return; // Exit early if the resource is not found
+	    } else {
+	        System.out.println("Resource loaded successfully!");
+	    }
+
+	    // Create the BackgroundImage object.
+	    Image backgroundImage = new Image(stream);
+	    BackgroundImage bgImage = new BackgroundImage(
+	        backgroundImage,
+	        BackgroundRepeat.NO_REPEAT,         // No repeat horizontally
+	        BackgroundRepeat.NO_REPEAT,         // No repeat vertically
+	        BackgroundPosition.CENTER,          // Center the image
+	        new BackgroundSize(
+	            BackgroundSize.AUTO, 
+	            BackgroundSize.AUTO, 
+	            true,  // Width proportional to container
+	            true,  // Height proportional to container
+	            false, // Don't contain
+	            false  // Don't cover
+	        )
+	    );
+
+	    // Apply the background to the DialogPane.
+	    dialog.getDialogPane().setBackground(new Background(bgImage));
+
+	    // Set result converter and handle input.
+	    dialog.setResultConverter(click -> {
+	        if (click == dialog.getButton())
+	            return new promptResults(contents.getPlayerInput("black"), contents.getPlayerInput("white"), contents.getPlayerInput("score"));
+	        return null;
+	    });
+
+	    // Show dialog to get player input.
+	    Optional<promptResults> result = dialog.showAndWait();
 		
 		// If result is present and name is not empty, change player names.
 		// If result is null, cancel starting the game.
@@ -380,14 +475,98 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	 * Style MainController (i.e. root).
 	 */
 	public void style() {
-		//setStyle("-fx-font-size: " + GameConstants.FONT_SIZE + "px; -fx-font-family: '" + GameConstants.FONT_FAMILY + "';");
-		setBackground(GameConstants.getTableImage());
-		setPadding(new Insets(10));
-		setVgap(GameConstants.getUIVGap());
-		setHgap(5);
-		setAlignment(Pos.CENTER);
-		setMaxSize(GameConstants.getScreenSize().getWidth(), GameConstants.getScreenSize().getHeight());
+	    setPadding(new Insets(10));
+	    setVgap(GameConstants.getUIVGap());
+	    setHgap(5);
+	    setAlignment(Pos.CENTER);
+	    setMaxSize(GameConstants.getScreenSize().getWidth(), GameConstants.getScreenSize().getHeight());
+
+	    // Add a listener to ensure the background is applied once the size is known
+	    widthProperty().addListener((observable, oldValue, newValue) -> updateBackground());
+	    heightProperty().addListener((observable, oldValue, newValue) -> updateBackground());
 	}
+
+	// Separate method to handle background updates
+	private void updateBackground() {
+	    // Check if the level is "Easy" and set the background
+	    if (level.equals("Easy")) {
+	        InputStream stream = getClass().getResourceAsStream("/img/Fundo de textura de madeira velha, vintage _ Foto Premium.jpg");
+	        if (stream != null) {
+	            Image backgroundImage = new Image(stream);
+	            BackgroundImage bgImage = new BackgroundImage(
+	                backgroundImage,
+	                BackgroundRepeat.NO_REPEAT,
+	                BackgroundRepeat.NO_REPEAT,
+	                BackgroundPosition.CENTER,
+	                new BackgroundSize(
+	                    getWidth(),  // Full width of GridPane
+	                    getHeight(), // Full height of GridPane
+	                    false,       // Not proportional to container width
+	                    false,       // Not proportional to container height
+	                    false,       // Don't contain
+	                    true         // Cover the container
+	                )
+	            );
+	            setBackground(new Background(bgImage));
+	        } else {
+	            System.err.println("Jungle background not found! Defaulting to table background.");
+	            setBackground(GameConstants.getTableImage());
+	        }
+	    } 
+	    if (level.equals("Medium")) {
+	        InputStream stream = getClass().getResourceAsStream("/img/download (6).jpg");
+	        if (stream != null) {
+	            Image backgroundImage = new Image(stream);
+	            BackgroundImage bgImage = new BackgroundImage(
+	                backgroundImage,
+	                BackgroundRepeat.NO_REPEAT,
+	                BackgroundRepeat.NO_REPEAT,
+	                BackgroundPosition.CENTER,
+	                new BackgroundSize(
+	                    getWidth(),  // Full width of GridPane
+	                    getHeight(), // Full height of GridPane
+	                    false,       // Not proportional to container width
+	                    false,       // Not proportional to container height
+	                    false,       // Don't contain
+	                    true         // Cover the container
+	                )
+	            );
+	            setBackground(new Background(bgImage));
+	        } else {
+	            System.err.println("Jungle background not found! Defaulting to table background.");
+	            setBackground(GameConstants.getTableImage());
+	        }
+	    }
+	        if (level.equals("Hard")) {
+		        InputStream stream = getClass().getResourceAsStream("/img/Free Photo _ Closeup shot of blue plank wooden background.jpg");
+		        if (stream != null) {
+		            Image backgroundImage = new Image(stream);
+		            BackgroundImage bgImage = new BackgroundImage(
+		                backgroundImage,
+		                BackgroundRepeat.NO_REPEAT,
+		                BackgroundRepeat.NO_REPEAT,
+		                BackgroundPosition.CENTER,
+		                new BackgroundSize(
+		                    getWidth(),  // Full width of GridPane
+		                    getHeight(), // Full height of GridPane
+		                    false,       // Not proportional to container width
+		                    false,       // Not proportional to container height
+		                    false,       // Don't contain
+		                    true         // Cover the container
+		                )
+		            );
+		            setBackground(new Background(bgImage));
+		        } else {
+		            System.err.println("Jungle background not found! Defaulting to table background.");
+		            setBackground(GameConstants.getTableImage());
+		        }
+	        }
+	    
+
+	    
+	}
+
+
 
 	/**
 	 * Manages the layout of the children, then adds them as the child of MainController (i.e. root).
@@ -431,4 +610,44 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	public boolean isCrawfordGame() {
 		return isCrawfordGame;
 	}
-}
+	private void applyLightingEffects(String level) {
+	    Lighting lighting = new Lighting();
+	    DropShadow dropShadow = new DropShadow();
+	    dropShadow.setRadius(10); // Blur radius
+	    dropShadow.setSpread(0.3); // Spread for intensity
+
+	    switch (level) {
+	        case "Easy":
+	            lighting.setDiffuseConstant(1.0);
+	            lighting.setSpecularConstant(0.2);
+	            lighting.setLight(new javafx.scene.effect.Light.Distant(45, 45, Color.web("#A8D5BA"))); // Pastel Green
+	            dropShadow.setColor(Color.web("#A8D5BA")); // Soft Green Shadow
+	            this.setStyle("-fx-background-color: #FAF3DD;"); // Soft Beige Background
+	            break;
+
+	        case "Medium":
+	            lighting.setDiffuseConstant(0.8);
+	            lighting.setSpecularConstant(0.4);
+	            lighting.setLight(new javafx.scene.effect.Light.Distant(45, 45, Color.web("#FFD580"))); // Soft Amber
+	            dropShadow.setColor(Color.web("#FFD3A5")); // Pale Orange Shadow
+	            this.setStyle("-fx-background-color: #ECEFF1;"); // Light Gray Background
+	            break;
+
+	        case "Hard":
+	            lighting.setDiffuseConstant(0.7); // Slightly more diffuse
+	            lighting.setSpecularConstant(0.5); // Balanced specular
+	            lighting.setLight(new javafx.scene.effect.Light.Distant(45, 45, Color.web("#B0C4DE"))); // Light Steel Blue
+	            dropShadow.setColor(Color.web("#708090")); // Slate Gray Shadow
+	            this.setStyle("-fx-background-color: #D3DDE6;"); // Light Grayish Blue Background
+	            break;
+	    }
+
+	    // Combine the effects
+	    dropShadow.setInput(lighting);
+	    this.setEffect(dropShadow); // Apply the combined effect to the MatchController
+	}
+
+
+
+
+} 

@@ -17,15 +17,12 @@ import java.util.stream.Collectors;
 
 public class QuestionManager {
     private final List<Question> questions;
+    private static QuestionManager instance;
 
     public QuestionManager(Path filePath) {
         try {
-            // Check if the writable file exists
             if (!Files.exists(filePath)) {
-                // Ensure the directory exists
                 Files.createDirectories(filePath.getParent());
-
-                // Copy the resource file to the writable location
                 try (InputStream resourceStream = getClass().getResourceAsStream("/readme-resources/CamelQuestionDB.json")) {
                     if (resourceStream == null) {
                         throw new RuntimeException("Default resource file not found!");
@@ -35,17 +32,20 @@ public class QuestionManager {
                 }
             }
 
-            // Load questions from the writable file
             ObjectMapper mapper = new ObjectMapper();
             questions = mapper.readValue(filePath.toFile(), new TypeReference<List<Question>>() {});
             if (questions == null || questions.isEmpty()) {
                 throw new RuntimeException("No questions found in the JSON file.");
             }
             System.out.println("Questions loaded successfully. Total questions: " + questions.size());
+            System.out.println("Using JSON file: " + filePath);
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to load questions from JSON file.", e);
         }
     }
+    
+
     public QuestionManager(InputStream inputStream) {
         try {
             // Use Jackson ObjectMapper to parse JSON from the InputStream
@@ -60,6 +60,12 @@ public class QuestionManager {
         } catch (Exception e) {
             throw new RuntimeException("Failed to load questions from InputStream.", e);
         }
+    }
+    public static synchronized QuestionManager getInstance() {
+        if (instance == null) {
+            instance = new QuestionManager(getWritableFilePath());
+        }
+        return instance;
     }
 
 
@@ -80,20 +86,31 @@ public class QuestionManager {
 
         Question question = new Question(questionText, answers, correctAnswer, difficulty);
         addQuestion(question);
+    
+
+        // Save to JSON file
+        saveQuestionsToJson();
+
+      
+
     }
 
 
     public void removeQuestion(Question question) {
         questions.remove(question);
+     // Save updated questions to JSON
+        saveQuestionsToJson();
+        
     }
 
     public void updateQuestion(Question oldQuestion, Question newQuestion) {
         int index = questions.indexOf(oldQuestion);
-        if (index != -1) {
-            questions.set(index, newQuestion);
-        } else {
+        if (index == -1) {
+            System.err.println("Question not found: " + oldQuestion);
             throw new IllegalArgumentException("Question not found in the list.");
         }
+        questions.set(index, newQuestion);
+        saveQuestionsToJson();
     }
 
     public Question getRandomQuestion(String diff) {
@@ -130,18 +147,10 @@ public class QuestionManager {
     }
 
     public static Path getWritableFilePath() {
-        // Save file in a hidden folder in the user's home directory for portability
-        Path filePath = Paths.get(System.getProperty("user.home"), "readme-resources", "CamelQuestionDB.json");
-
-        try {
-            // Ensure the parent directory exists
-            Files.createDirectories(filePath.getParent());
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to create directories for writable path: " + filePath, e);
-        }
-
-        return filePath;
+        return Paths.get("/backgammon-master/readme-resources/CamelQuestionDB.json").toAbsolutePath();
     }
+
+
 
 
 

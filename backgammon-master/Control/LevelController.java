@@ -4,6 +4,7 @@ import Model.Dice;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -77,6 +78,16 @@ public class LevelController {
         Scene gameScene = new Scene(matchController);
         stage.setScene(gameScene);
         stage.setTitle("Backgammon - Game Screen");
+        setCustomIcon(stage); // Add this line to set the icon
         stage.show();
+    }
+    private void setCustomIcon(Stage stage) {
+        try {
+            // Load the custom icon
+            Image icon = new Image(getClass().getResourceAsStream("/img/backgammon.png")); // Replace with your actual icon path
+            stage.getIcons().add(icon); // Add the icon to the stage
+        } catch (Exception e) {
+            System.err.println("Error loading custom icon: " + e.getMessage());
+        }
     }
 }

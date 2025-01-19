@@ -6,6 +6,7 @@ import javafx.beans.property.StringProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Question {
     private final StringProperty question;
@@ -70,4 +71,20 @@ public class Question {
     public StringProperty difficultyProperty() {
         return difficulty;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Question question = (Question) obj;
+        return Objects.equals(getQuestionText(), question.getQuestionText()) &&
+               Objects.equals(getCorrectAnswer(), question.getCorrectAnswer()) &&
+               Objects.equals(answers, question.answers) &&
+               Objects.equals(getDifficulty(), question.getDifficulty());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getQuestionText(), getCorrectAnswer(), answers, getDifficulty());
+    }
+
 }

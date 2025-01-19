@@ -2,6 +2,7 @@ package Control;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import Model.GameHistory;
 
@@ -17,6 +18,8 @@ public class GameHistoryJsonUtil {
     static {
         // Register JavaTimeModule for LocalDateTime support
         OBJECT_MAPPER.registerModule(new JavaTimeModule());
+        OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
+        OBJECT_MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Optional: Avoid timestamps
     }
 
     // Load history from the JSON file in the classpath
@@ -36,14 +39,26 @@ public class GameHistoryJsonUtil {
 
     public static void saveHistory(List<GameHistory> historyList) {
         try {
-            // Save to user's home directory for write access
-            String userHome = System.getProperty("user.home");
-            File file = new File(userHome, "game_history.json");
-            System.out.println("Saving history to: " + file.getAbsolutePath());
-
+            File file = new File(GameHistoryJsonUtil.class.getClassLoader().getResource(FILE_PATH).getFile());
             OBJECT_MAPPER.writeValue(file, historyList);
+            System.out.println("History saved to: " + file.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+    public static void saveGameHistory(GameHistory gameHistory) {
+        try {
+            List<GameHistory> history = loadHistory();
+            if (history == null) {
+                history = new ArrayList<>();
+            }
+            history.add(gameHistory);
+            saveHistory(history); // Reuse the updated method
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

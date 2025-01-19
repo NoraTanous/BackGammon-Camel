@@ -56,15 +56,14 @@ public class InfoPanel extends ScrollPane {
 	}
 	
 	private void styleTextContainer() {
-		double height = GameConstants.getHalfBoardSize().getHeight();
-		textPadding = 3;
-		textContainer.setPadding(new Insets(textPadding, textPadding*3, textPadding, textPadding*3));
-		textContainer.setLineSpacing(textPadding / 2.0);
-		//textContainer.setMinHeight(height - textPadding * 2);	// needs to be set, if not the white background uneven at start.
-		textContainer.setMinHeight(height);
-		textContainer.setLineSpacing(textPadding);
-		drawTextContainer();
+	    double height = GameConstants.getHalfBoardSize().getHeight();
+	    textPadding = 10; // Increased padding for better readability
+	    textContainer.setPadding(new Insets(textPadding, textPadding * 3, textPadding, textPadding * 3));
+	    textContainer.setLineSpacing(8); // Increased line spacing
+	    textContainer.setMinHeight(height);
+	    drawTextContainer();
 	}
+
 	private void drawTextContainer() {
 		if (Settings.DARK_THEME) textContainer.setBackground(GameConstants.getPanelImage());
 	}
@@ -78,8 +77,8 @@ public class InfoPanel extends ScrollPane {
 	 */
 	public void welcome() {
 		print("Welcome to Backgammon!");
-		print("Enter \"/start\" below to start a new game.");
-		print("Or enter \"/help\" for a list of possible commands.");
+		
+		print(" enter \"/help\" for a list of possible commands.");
 	}
 
 	// text padding at top and bottom.
@@ -106,58 +105,53 @@ public class InfoPanel extends ScrollPane {
 	public void print(String msg, MessageType mtype) {
 		Text text = new Text();
 		text.setFont(GameConstants.getFont());
-		String prefix = ">";
+		String prefix = "-";
 		String type = "";
 		
 		if (Settings.DARK_THEME) {
-			switch (mtype) {
-				case ANNOUNCEMENT:
-					prefix = "\n" + prefix;
-					text.setFont(GameConstants.getFont(true, false));
-				case SYSTEM:
-					type = "[System]";
-					text.setFill(Color.CHARTREUSE);
-					break;
-				case ERROR:
-					type = "[Error]";
-					text.setFill(Color.rgb(254, 168, 117));
-					break;
-				case DEBUG:
-					type = "[Debug]";
-					text.setFill(Color.SILVER);
-					break;
-				case WARNING:
-					type = "[Warning]";
-					text.setFill(Color.GOLD);
-				case CHAT:
-					text.setFill(Color.rgb(247, 220, 111));
-					break;
-			}
+		    switch (mtype) {
+		        case ANNOUNCEMENT:
+		            text.setFill(Color.LIGHTBLUE); // Softer blue for announcements
+		            break;
+		        case SYSTEM:
+		            text.setFill(Color.LIGHTGREEN); // Softer green for system messages
+		            break;
+		        case ERROR:
+		            text.setFill(Color.INDIANRED); // Softer red for errors
+		            break;
+		        case DEBUG:
+		            text.setFill(Color.LIGHTGRAY); // Softer gray for debug messages
+		            break;
+		        case WARNING:
+		            text.setFill(Color.GOLDENROD); // Milder yellow for warnings
+		            break;
+		        case CHAT:
+		            text.setFill(Color.WHEAT); // Softer orange for chat
+		            break;
+		    }
 		} else {
-			switch (mtype) {
-			case ANNOUNCEMENT:
-				prefix = "\n" + prefix;
-				text.setFont(GameConstants.getFont(true, false));
-			case SYSTEM:
-				type = "[System]";
-				text.setFill(Color.GREEN);
-				break;
-			case ERROR:
-				type = "[Error]";
-				text.setFill(Color.FIREBRICK);
-				break;
-			case DEBUG:
-				type = "[Debug]";
-				text.setFill(Color.DIMGRAY);
-				break;
-			case WARNING:
-				type = "[Warning]";
-				text.setFill(Color.GOLD);
-			case CHAT:
-				text.setFill(Color.ORANGE);
-				break;
-			}
+		    switch (mtype) {
+		        case ANNOUNCEMENT:
+		            text.setFill(Color.DODGERBLUE); // Softer blue
+		            break;
+		        case SYSTEM:
+		            text.setFill(Color.LIMEGREEN); // Softer green
+		            break;
+		        case ERROR:
+		            text.setFill(Color.SALMON); // Softer red
+		            break;
+		        case DEBUG:
+		            text.setFill(Color.SILVER); // Neutral gray
+		            break;
+		        case WARNING:
+		            text.setFill(Color.KHAKI); // Softer yellow
+		            break;
+		        case CHAT:
+		            text.setFill(Color.PEACHPUFF); // Softer orange
+		            break;
+		    }
 		}
+
 		text.setText(prefix + " " + type + " " + msg + "\n");
 		
 		// same as
@@ -219,11 +213,18 @@ public class InfoPanel extends ScrollPane {
 		return textContainer;
 	}
 	
-	// text flow version of textarea's appendText().
 	private void appendText(Text text) {
-		textContainer.getChildren().add(text);
-		removeExcessText();
+	    String originalText = text.getText();
+	    if (originalText.length() > 100) { // Truncate long messages
+	        text.setText(originalText.substring(0, 97) + "...");
+	        text.setOnMouseClicked(event -> {
+	            System.out.println("Full Message: " + originalText);
+	        });
+	    }
+	    textContainer.getChildren().add(text);
+	    removeExcessText();
 	}
+
 	
 	// If exceed threshold, remove upper half of the text.
 	private void removeExcessText() {
