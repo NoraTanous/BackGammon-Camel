@@ -65,15 +65,16 @@ public class AdminLoginController {
 
             // Create a new stage for the menu window
             Stage menuStage = new Stage();
+         // Set custom icon for the menu stage
+            setCustomIcon(menuStage);
+       
             menuStage.setTitle("Menu");
             menuStage.setScene(new Scene(root));
             menuStage.show();
-         // Set custom icon for the menu stage
-            setCustomIcon(menuStage);
+         
             // Close the admin login window
             Stage currentStage = (Stage) backButton.getScene().getWindow();
-         // Set custom icon for the menu stage
-            setCustomIcon(currentStage);
+            
             currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();

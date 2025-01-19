@@ -44,8 +44,7 @@ public class QAController {
 
     @FXML
     private Button backButton;
-    @FXML
-    private Button reloadButton;
+    
 
     private ObservableList<Question> questionList;
     private QuestionManager questionManager;
@@ -352,7 +351,7 @@ public class QAController {
             return;
         }
 
-        // Save the original question as oldQuestion
+        // Save a reference to the original question
         Question oldQuestion = new Question(
                 question.getQuestionText(),
                 new ArrayList<>(question.getAnswers()),
@@ -360,17 +359,25 @@ public class QAController {
                 question.getDifficulty()
         );
 
+        // Create a new Question object to store updated values
+        Question updatedQuestion = new Question(
+                oldQuestion.getQuestionText(),
+                new ArrayList<>(oldQuestion.getAnswers()),
+                oldQuestion.getCorrectAnswer(),
+                oldQuestion.getDifficulty()
+        );
+
         // Open a dialog for editing the question
-        TextInputDialog questionDialog = new TextInputDialog(question.getQuestionText());
+        TextInputDialog questionDialog = new TextInputDialog(updatedQuestion.getQuestionText());
         questionDialog.setTitle("Edit Question");
         questionDialog.setHeaderText("Edit the Question Text");
         questionDialog.setContentText("Question:");
-        questionDialog.showAndWait().ifPresent(question::setQuestionText);
+        questionDialog.showAndWait().ifPresent(updatedQuestion::setQuestionText);
 
         // Edit answers
         List<String> newAnswers = new ArrayList<>();
-        for (int i = 0; i < question.getAnswers().size(); i++) {
-            TextInputDialog answerDialog = new TextInputDialog(question.getAnswers().get(i));
+        for (int i = 0; i < updatedQuestion.getAnswers().size(); i++) {
+            TextInputDialog answerDialog = new TextInputDialog(updatedQuestion.getAnswers().get(i));
             answerDialog.setTitle("Edit Answer");
             answerDialog.setHeaderText("Edit Answer " + (i + 1));
             answerDialog.setContentText("Answer:");
@@ -378,27 +385,24 @@ public class QAController {
             if (newAnswer != null && !newAnswer.isEmpty()) {
                 newAnswers.add(newAnswer);
             } else {
-                newAnswers.add(question.getAnswers().get(i)); // Keep the old answer if no input
+                newAnswers.add(updatedQuestion.getAnswers().get(i)); // Keep the old answer if no input
             }
         }
-        question.setAnswers(newAnswers);
+        updatedQuestion.setAnswers(newAnswers);
 
         // Edit correct answer
-        TextInputDialog correctAnswerDialog = new TextInputDialog(question.getCorrectAnswer());
+        TextInputDialog correctAnswerDialog = new TextInputDialog(updatedQuestion.getCorrectAnswer());
         correctAnswerDialog.setTitle("Edit Correct Answer");
         correctAnswerDialog.setHeaderText("Edit the Correct Answer");
         correctAnswerDialog.setContentText("Correct Answer:");
-        correctAnswerDialog.showAndWait().ifPresent(question::setCorrectAnswer);
+        correctAnswerDialog.showAndWait().ifPresent(updatedQuestion::setCorrectAnswer);
 
         // Edit difficulty
-        TextInputDialog difficultyDialog = new TextInputDialog(question.getDifficulty());
+        TextInputDialog difficultyDialog = new TextInputDialog(updatedQuestion.getDifficulty());
         difficultyDialog.setTitle("Edit Difficulty");
         difficultyDialog.setHeaderText("Edit Difficulty Level");
         difficultyDialog.setContentText("Difficulty:");
-        difficultyDialog.showAndWait().ifPresent(question::setDifficulty);
-
-        // Use question as updatedQuestion after edits
-        Question updatedQuestion = question;
+        difficultyDialog.showAndWait().ifPresent(updatedQuestion::setDifficulty);
 
         // Update the question in QuestionManager
         questionManager.updateQuestion(oldQuestion, updatedQuestion);
@@ -417,6 +421,7 @@ public class QAController {
         successAlert.setContentText("The question has been updated successfully.");
         successAlert.showAndWait();
     }
+
     @FXML
     private void reloadQuestions() {
         questionManager = new QuestionManager(QuestionManager.getWritableFilePath());

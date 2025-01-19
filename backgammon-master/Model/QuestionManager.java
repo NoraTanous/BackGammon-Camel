@@ -105,12 +105,11 @@ public class QuestionManager {
 
     public void updateQuestion(Question oldQuestion, Question newQuestion) {
         int index = questions.indexOf(oldQuestion);
-        if (index != -1) {
-            questions.set(index, newQuestion);
-        } else {
+        if (index == -1) {
+            System.err.println("Question not found: " + oldQuestion);
             throw new IllegalArgumentException("Question not found in the list.");
         }
-     // Save updated questions to JSON
+        questions.set(index, newQuestion);
         saveQuestionsToJson();
     }
 
