@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.InputStream;
+
+import Control.LevelController;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -207,7 +209,13 @@ public class GameConstants {
 	 * @return image of the board.
 	 */
 	public static Background getBoardImage() {
-		InputStream input = getFile("img/board/green.png");
+		InputStream input = getFile("img/board/gray.png");
+		if(LevelController.level.equals("Medium")) {
+			input = getFile("img/board/camel.png");
+		}
+		if(LevelController.level.equals("Hard")) {
+			input = getFile("img/board/warm.png");
+		}
 		Background bg = new Background(new BackgroundImage(new Image(input), null, null, null, null));
 		try {
 			input.close();

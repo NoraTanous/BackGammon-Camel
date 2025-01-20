@@ -316,7 +316,35 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 		ScoreboardPrompt contents = new ScoreboardPrompt(topPlayer, bottomPlayer);
 		
 		dialog.getDialogPane().setContent(contents);
-		
+		  // Load the background image.
+	    InputStream stream = getClass().getResourceAsStream("/img/IMG_4098.JPG");
+	    if (stream == null) {
+	        System.err.println("Resource not found: /img/IMG_4098.JPG");
+	        return; // Exit early if the resource is not found
+	    } else {
+	        System.out.println("Resource loaded successfully!");
+	    }
+
+	    // Create the BackgroundImage object.
+	    Image backgroundImage = new Image(stream);
+	    BackgroundImage bgImage = new BackgroundImage(
+	        backgroundImage,
+	        BackgroundRepeat.NO_REPEAT,         // No repeat horizontally
+	        BackgroundRepeat.NO_REPEAT,         // No repeat vertically
+	        BackgroundPosition.CENTER,          // Center the image
+	        new BackgroundSize(
+	            BackgroundSize.AUTO, 
+	            BackgroundSize.AUTO, 
+	            true,  // Width proportional to container
+	            true,  // Height proportional to container
+	            false, // Don't contain
+	            false  // Don't cover
+	        )
+	    );
+
+	    // Apply the background to the DialogPane.
+	    dialog.getDialogPane().setBackground(new Background(bgImage));
+
 		// Run later because this method will be called from a running animation.
 		// This animation resides in GameplayTimer.java.
 		//
