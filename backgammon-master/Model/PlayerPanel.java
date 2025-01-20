@@ -113,7 +113,7 @@ public class PlayerPanel extends HBox implements ColorParser {
 	                }),
 	                createMusicIcon("Model/img/icons/pause.png", "Pause", () -> {
 	                    System.out.println("Pause button clicked!");
-	                    musicPlayer.pause();
+	                    MusicPlayer.pause();
 	                    System.out.println(musicPlayer.getStatus("pause"));
 	                }),
 	                createMusicIcon("Model/img/icons/next.png", "Next", () -> {

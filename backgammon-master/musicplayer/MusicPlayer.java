@@ -166,7 +166,7 @@ public class MusicPlayer {
 		return outputStatus;
 	}
 	
-	public void pause() {
+	public static void pause() {
 		mediaPlayer.pause();
 	}
 	
