@@ -31,6 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import View.CommandPanel;
 import View.InfoPanel;
+
 import View.RollDieButton;
 import View.ScoreboardPrompt;
 import View.Dialogs;
@@ -64,8 +65,6 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	private Stage stage;
 	private boolean isPlayerInfosEnteredFirstTime, isPromptCancel, hadCrawfordGame, isCrawfordGame;
     private String level; // To store the current level
-    private Button muteButton; // Mute button
-    private boolean isMuted = false; // Tracks mute state
 
 	
 	/**
@@ -84,12 +83,12 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 		setLevel(level);
 		 // Apply the lighting effects based on the level
 		style();
-	    applyLightingEffects(level); // Call it here to set the visual effect
+	//    applyLightingEffects(level); // Call it here to set the visual effect
 	   
 
 		initApplication();
 		if(this.level.equals("Easy")) {
-		initGame();
+			initGame();
 		}
 		if(this.level.equals("Medium")) {
 			initMediumGame();
@@ -489,80 +488,9 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	// Separate method to handle background updates
 	private void updateBackground() {
 	    // Check if the level is "Easy" and set the background
-	    if (level.equals("Easy")) {
-	        InputStream stream = getClass().getResourceAsStream("/img/Fundo de textura de madeira velha, vintage _ Foto Premium.jpg");
-	        if (stream != null) {
-	            Image backgroundImage = new Image(stream);
-	            BackgroundImage bgImage = new BackgroundImage(
-	                backgroundImage,
-	                BackgroundRepeat.NO_REPEAT,
-	                BackgroundRepeat.NO_REPEAT,
-	                BackgroundPosition.CENTER,
-	                new BackgroundSize(
-	                    getWidth(),  // Full width of GridPane
-	                    getHeight(), // Full height of GridPane
-	                    false,       // Not proportional to container width
-	                    false,       // Not proportional to container height
-	                    false,       // Don't contain
-	                    true         // Cover the container
-	                )
-	            );
-	            setBackground(new Background(bgImage));
-	        } else {
-	            System.err.println("Jungle background not found! Defaulting to table background.");
 	            setBackground(GameConstants.getTableImage());
-	        }
-	    } 
-	    if (level.equals("Medium")) {
-	        InputStream stream = getClass().getResourceAsStream("/img/download (6).jpg");
-	        if (stream != null) {
-	            Image backgroundImage = new Image(stream);
-	            BackgroundImage bgImage = new BackgroundImage(
-	                backgroundImage,
-	                BackgroundRepeat.NO_REPEAT,
-	                BackgroundRepeat.NO_REPEAT,
-	                BackgroundPosition.CENTER,
-	                new BackgroundSize(
-	                    getWidth(),  // Full width of GridPane
-	                    getHeight(), // Full height of GridPane
-	                    false,       // Not proportional to container width
-	                    false,       // Not proportional to container height
-	                    false,       // Don't contain
-	                    true         // Cover the container
-	                )
-	            );
-	            setBackground(new Background(bgImage));
-	        } else {
-	            System.err.println("Jungle background not found! Defaulting to table background.");
-	            setBackground(GameConstants.getTableImage());
-	        }
-	    }
-	        if (level.equals("Hard")) {
-		        InputStream stream = getClass().getResourceAsStream("/img/Free Photo _ Closeup shot of blue plank wooden background.jpg");
-		        if (stream != null) {
-		            Image backgroundImage = new Image(stream);
-		            BackgroundImage bgImage = new BackgroundImage(
-		                backgroundImage,
-		                BackgroundRepeat.NO_REPEAT,
-		                BackgroundRepeat.NO_REPEAT,
-		                BackgroundPosition.CENTER,
-		                new BackgroundSize(
-		                    getWidth(),  // Full width of GridPane
-		                    getHeight(), // Full height of GridPane
-		                    false,       // Not proportional to container width
-		                    false,       // Not proportional to container height
-		                    false,       // Don't contain
-		                    true         // Cover the container
-		                )
-		            );
-		            setBackground(new Background(bgImage));
-		        } else {
-		            System.err.println("Jungle background not found! Defaulting to table background.");
-		            setBackground(GameConstants.getTableImage());
-		        }
-	        }
-	    
-
+	        
+	    	  
 	    
 	}
 
@@ -610,7 +538,7 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	public boolean isCrawfordGame() {
 		return isCrawfordGame;
 	}
-	private void applyLightingEffects(String level) {
+/*	private void applyLightingEffects(String level) {
 	    Lighting lighting = new Lighting();
 	    DropShadow dropShadow = new DropShadow();
 	    dropShadow.setRadius(10); // Blur radius
@@ -645,7 +573,7 @@ public class MatchController extends GridPane implements ColorPerspectiveParser,
 	    // Combine the effects
 	    dropShadow.setInput(lighting);
 	    this.setEffect(dropShadow); // Apply the combined effect to the MatchController
-	}
+	}*/
 
 
 

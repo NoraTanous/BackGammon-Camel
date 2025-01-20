@@ -18,10 +18,10 @@ import constants.GameConstants;
  */
 public class MusicPlayer {
 	private final String defaultMusic = "jazz.aiff";
-	private MediaPlayer mediaPlayer;
-	private Media media;
-	private ArrayList<String> playlist;
-	private String currentMusic;
+	private static MediaPlayer mediaPlayer;
+	private static Media media;
+	private static ArrayList<String> playlist;
+	private static String currentMusic;
 	
 	public MusicPlayer() {
 		initPlaylist();
@@ -33,8 +33,8 @@ public class MusicPlayer {
 	 * Method to load the music file into the mediaPlayer object to be played
 	 * @param fileName to be loaded into the media object to play the music
 	 */
-	private void initMediaPlayer(String fileName) {
-		media = new Media(getClass().getResource("/musicplayer/songs/" + fileName).toExternalForm());
+	private static void initMediaPlayer(String fileName) {
+		media = new Media(MusicPlayer.class.getResource("/musicplayer/songs/" + fileName).toExternalForm());
 		mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.setVolume(0.1);
 
@@ -97,11 +97,11 @@ public class MusicPlayer {
 		});
 	}
 	
-	public void play() {
+	public static void play() {
 		mediaPlayer.play();
 	}
 	
-	public void next() {
+	public static void next() {
 		stop();
 		
 		int indexOfSong = playlist.indexOf(currentMusic);
@@ -115,7 +115,7 @@ public class MusicPlayer {
 		initMediaPlayer(currentMusic);
 	}
 	
-	public void prev() {
+	public static void prev() {
 		stop();
 		
 		int indexOfSong = playlist.indexOf(currentMusic);
@@ -170,11 +170,11 @@ public class MusicPlayer {
 		mediaPlayer.pause();
 	}
 	
-	public void stop() {
+	public static void stop() {
 		mediaPlayer.stop();
 	}
 	
-	public void muteVolume(boolean toggle) {
+	public static  void muteVolume(boolean toggle) {
 		mediaPlayer.setMute(toggle);
 	}
 	

@@ -72,7 +72,7 @@ public class GameComponentsController extends VBox {
 		middlePart.getChildren().add(1, bars);
 		middlePart.getChildren().add(0, leftHome);
 		middlePart.getChildren().add(rightHome);
-		
+		PlayerPanel.flag =true;
 		topPlayerPnl = new PlayerPanel(middlePart.getMinWidth(), topPlayer);
 		btmPlayerPnl = new PlayerPanel(middlePart.getMinWidth(), bottomPlayer);
 		
