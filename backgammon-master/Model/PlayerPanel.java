@@ -108,7 +108,7 @@ public class PlayerPanel extends HBox implements ColorParser {
 	        musicControls.getChildren().addAll(
 	                createMusicIcon("Model/img/icons/play.png", "Play", () -> {
 	                    System.out.println("Play button clicked!");
-	                    musicPlayer.play();
+	                    MusicPlayer.play();
 	                    System.out.println(musicPlayer.getStatus("play"));
 	                }),
 	                createMusicIcon("Model/img/icons/pause.png", "Pause", () -> {
@@ -118,12 +118,12 @@ public class PlayerPanel extends HBox implements ColorParser {
 	                }),
 	                createMusicIcon("Model/img/icons/next.png", "Next", () -> {
 	                    System.out.println("Next button clicked!");
-	                    musicPlayer.next();
+	                    MusicPlayer.next();
 	                    System.out.println(musicPlayer.getStatus("next"));
 	                }),
 	                createMusicIcon("Model/img/icons/prev.png", "Previous", () -> {
 	                    System.out.println("Previous button clicked!");
-	                    musicPlayer.prev();
+	                    MusicPlayer.prev();
 	                    System.out.println(musicPlayer.getStatus("prev"));
 	                }),
 	                createMusicIcon("Model/img/icons/mute.png", "Mute", () -> {
