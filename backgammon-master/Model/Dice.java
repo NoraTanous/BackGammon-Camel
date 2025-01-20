@@ -7,10 +7,14 @@ import java.util.Random;
 import Control.ColorParser;
 import Control.LevelController;
 import Control.MatchController;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 /**
  * This class represents the dice object in Backgammon game.
@@ -174,11 +178,30 @@ public class Dice extends ImageView implements ColorParser {
 	 * Rotate the dice image.
 	 */
 	private void rotate() {
-		// rotation range of 15 to -15.
-		Random rand = new Random();
-		int rotation = rand.nextInt(30) - 15 + 1;
-		setRotate(rotation);
+	    // Random final rotation between -15 and 15
+	    Random rand = new Random();
+	    int rotation = rand.nextInt(30) - 15 + 1;
+
+	    // Rotation animation
+	    Timeline rotateTimeline = new Timeline(
+	        new KeyFrame(Duration.ZERO, new KeyValue(rotateProperty(), 0)),
+	        new KeyFrame(Duration.seconds(0.5), new KeyValue(rotateProperty(), 720)), // Two full rotations
+	        new KeyFrame(Duration.seconds(1), new KeyValue(rotateProperty(), rotation)) // Final random rotation
+	    );
+
+	    // Bounce animation
+	    Timeline bounceTimeline = new Timeline(
+	        new KeyFrame(Duration.ZERO, new KeyValue(translateYProperty(), 0)),
+	        new KeyFrame(Duration.seconds(0.25), new KeyValue(translateYProperty(), -20)), // Bounce up
+	        new KeyFrame(Duration.seconds(0.5), new KeyValue(translateYProperty(), 0)) // Back to original position
+	    );
+
+	    // Play animations together
+	    rotateTimeline.play();
+	    bounceTimeline.play();
 	}
+
+
 	
 	public void setUsed() {
 		// darken image.
