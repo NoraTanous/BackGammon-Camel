@@ -1,10 +1,14 @@
 package Control;
 
+import java.io.IOException;
+
 import Model.Dice;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -37,6 +41,13 @@ public class LevelController {
         level = "Hard";
         startGame("Hard");
     }
+    @FXML
+    private void handleBackToMenu(javafx.scene.input.MouseEvent event) {
+        // Get the current stage and close it
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
+
 
     private void startGame(String level) {
         System.out.println("START button clicked! Level: " + level);

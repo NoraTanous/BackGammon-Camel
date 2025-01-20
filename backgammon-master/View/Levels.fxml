@@ -22,6 +22,12 @@
                   <Image url="@../img/Subject%202%20(1).png" />
                </image>
             </ImageView>
+            <ImageView blendMode="COLOR_DODGE" cache="true" fitHeight="28.0" fitWidth="46.0" layoutX="27.0" layoutY="14.0" onMouseClicked="#handleBackToMenu" pickOnBounds="true" preserveRatio="true">
+			   <image>
+			      <Image url="@../img/back.png" />
+			   </image>
+			</ImageView>
+
             <Text layoutX="119.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Level" textAlignment="CENTER" wrappingWidth="282.13671875">
                <font>
                   <Font size="35.0" />

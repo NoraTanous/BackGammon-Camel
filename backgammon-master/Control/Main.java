@@ -29,7 +29,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/View/Menu.fxml"));
         Parent root = loader.load();
         // Set up the scene with the loaded Menu
-        Scene scene = new Scene(root);
+       Scene scene = new Scene(root);
         stage.setScene(scene);
      // Set custom icon
         setCustomIcon(stage);
