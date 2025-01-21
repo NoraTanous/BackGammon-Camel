@@ -209,7 +209,7 @@ public class GameConstants {
 	 * @return image of the board.
 	 */
 	public static Background getBoardImage() {
-		InputStream input = getFile("img/board/gray.png");
+		InputStream input = getFile("img/board/greeneasy.png");
 		if(LevelController.level.equals("Medium")) {
 			input = getFile("img/board/camel.png");
 		}
