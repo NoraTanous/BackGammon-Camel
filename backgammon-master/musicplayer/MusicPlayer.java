@@ -17,7 +17,7 @@ import constants.GameConstants;
  *
  */
 public class MusicPlayer {
-	private final String defaultMusic = "jazz.aiff";
+	private final String defaultMusic = "blankspace.aiff";
 	private static MediaPlayer mediaPlayer;
 	private static Media media;
 	private static ArrayList<String> playlist;
@@ -77,6 +77,11 @@ public class MusicPlayer {
 		playlist = new ArrayList<String>();
 		playlist.add("jazz.aiff");
 		playlist.add("classical.aiff");
+		playlist.add("timeless.aiff");
+		playlist.add("blankspace.aiff");
+		playlist.add("doctor.aiff");
+		playlist.add("nshekot.aiff");
+
 	}
 	
 	public void random() {
