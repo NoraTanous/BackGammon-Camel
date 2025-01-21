@@ -14,7 +14,8 @@ import java.util.List;
 import Model.Question;
 
 public class QuestionStationController {
-    @FXML
+    public static boolean isCorrectAnswerd;
+	@FXML
     private Button option1Button;
     @FXML
     private Button option2Button;
@@ -25,22 +26,22 @@ public class QuestionStationController {
     @FXML
     private Label questionLabel;
     @FXML
-    private Label timerLabel; // Label for displaying the timer
+    private Label timerLabel;
 
-    public static boolean isCorrectAnswerd = false;
     private String correctAnswer;
     private Stage questionStage;
     private GameplayController gameplayController;
     private Timeline timer;
-    private int timeRemaining = 1800; // 30 minutes in seconds
+    private int timeRemaining = 60;
+
+    private QuestionState currentState;
+
     public void setQuestionData(Question question, Stage stage, GameplayController gameplayController) {
         this.questionStage = stage;
         this.gameplayController = gameplayController;
 
-        // Disable the close button
         stage.setOnCloseRequest(event -> event.consume());
 
-        // Set the question text and answers
         questionLabel.setText(question.getQuestionText());
         List<String> answers = question.getAnswers();
         correctAnswer = question.getCorrectAnswer();
@@ -50,23 +51,23 @@ public class QuestionStationController {
         option3Button.setText(answers.get(2));
         option4Button.setText(answers.get(3));
 
-        // Attach button handlers
-        option1Button.setOnAction(e -> handleAnswer(option1Button.getText()));
-        option2Button.setOnAction(e -> handleAnswer(option2Button.getText()));
-        option3Button.setOnAction(e -> handleAnswer(option3Button.getText()));
-        option4Button.setOnAction(e -> handleAnswer(option4Button.getText()));
+        option1Button.setOnAction(e -> currentState.handleAnswer(option1Button.getText()));
+        option2Button.setOnAction(e -> currentState.handleAnswer(option2Button.getText()));
+        option3Button.setOnAction(e -> currentState.handleAnswer(option3Button.getText()));
+        option4Button.setOnAction(e -> currentState.handleAnswer(option4Button.getText()));
 
-        // Start or reset the timer
         startOrResetTimer();
-        setCustomIcon(stage); // Add this line
+        setCustomIcon(stage);
+
+        currentState = new WaitingForAnswerState(this);
     }
 
     private void startOrResetTimer() {
-        timeRemaining = 60; // Reset timer to 30 minutes
+        timeRemaining = 60;
         updateTimerLabel();
 
         if (timer != null) {
-            timer.stop(); // Stop any existing timer
+            timer.stop();
         }
 
         timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
@@ -75,7 +76,7 @@ public class QuestionStationController {
 
             if (timeRemaining <= 0) {
                 timer.stop();
-                handleTimeout();
+                currentState.handleTimeout();
             }
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
@@ -88,38 +89,33 @@ public class QuestionStationController {
         timerLabel.setText(String.format("Time Left: %02d:%02d", minutes, seconds));
     }
 
-
-    public void handleAnswer(String answer) {
-        if (timer != null) {
-            timer.stop(); // Stop the timer when an answer is submitted
-        }
-
-        if (answer.equals(correctAnswer)) {
-            isCorrectAnswerd = true;
-            gameplayController.allowPlayerToContinue(); // Allow the player to continue
-           // gameplayController.placeCheckerOnQuestionStation(); // Place the checker only on a correct answer
-        } else {
-            gameplayController.consumeAllDiceForFailedQuestion(); // Handle incorrect answer
-        }
-        questionStage.close(); // Close the question window
-
+    public void closeQuestionWindow() {
+        questionStage.close();
     }
 
-
-    public void handleTimeout() {
-        if (timer != null) {
-            timer.stop();
-        }
-        questionStage.close(); // Close the question window
-        gameplayController.passTurnToNextPlayerDueToQuestionFailure(); // Pass turn on timeout
+    public String getCorrectAnswer() {
+        return correctAnswer;
     }
+
+    public GameplayController getGameplayController() {
+        return gameplayController;
+    }
+
+    public void setState(QuestionState state) {
+        this.currentState = state;
+    }
+
     private void setCustomIcon(Stage stage) {
         try {
-            // Load the custom icon
-            Image icon = new Image(getClass().getResourceAsStream("/img/backgammon.png")); // Replace with your actual icon path
-            stage.getIcons().add(icon); // Add the icon to the stage
+            Image icon = new Image(getClass().getResourceAsStream("/img/backgammon.png"));
+            stage.getIcons().add(icon);
         } catch (Exception e) {
             System.err.println("Error loading custom icon: " + e.getMessage());
         }
     }
+
+	public void handleTimeout() {
+		// TODO Auto-generated method stub
+		
+	}
 }
