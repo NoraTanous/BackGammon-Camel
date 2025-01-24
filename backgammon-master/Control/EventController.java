@@ -464,6 +464,7 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 			                        return; // Stop further processing
 			                    }
 			                }
+			                if (selectedPip.isSurpriseStation()) {
 				        	    infoPnl.print("Player landed on a Surprise Station.", MessageType.DEBUG); // Log
 				        	    Checker checker = getCurrentChecker();
 				        	    if (checker != null) {
