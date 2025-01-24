@@ -3,7 +3,6 @@ package Model;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -12,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -23,27 +23,29 @@ public class QuestionManager {
         try {
             if (!Files.exists(filePath)) {
                 Files.createDirectories(filePath.getParent());
-                try (InputStream resourceStream = getClass().getResourceAsStream("/readme-resources/CamelQuestionDB.json")) {
-                    if (resourceStream == null) {
-                        throw new RuntimeException("Default resource file not found!");
+                try (InputStream resourceStream = getClass().getClassLoader().getResourceAsStream("readme-resources/CamelQuestionDB.json")) {
+                    if (resourceStream != null) {
+                        Files.copy(resourceStream, filePath);
+                        System.out.println("Default file copied to: " + filePath.toAbsolutePath());
+                    } else {
+                        System.out.println("Resource not found. Creating a default JSON file.");
+                        Files.writeString(filePath, "[]"); // Create an empty JSON array
                     }
-                    Files.copy(resourceStream, filePath);
-                    System.out.println("Default file copied to: " + filePath.toAbsolutePath());
                 }
             }
 
             ObjectMapper mapper = new ObjectMapper();
-            questions = mapper.readValue(filePath.toFile(), new TypeReference<List<Question>>() {});
-            if (questions == null || questions.isEmpty()) {
-                throw new RuntimeException("No questions found in the JSON file.");
-            }
+            questions = Optional.ofNullable(mapper.readValue(filePath.toFile(), new TypeReference<List<Question>>() {}))
+                    .orElseThrow(() -> new RuntimeException("No questions found in the JSON file."));
+
             System.out.println("Questions loaded successfully. Total questions: " + questions.size());
             System.out.println("Using JSON file: " + filePath);
-
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Failed to load questions from JSON file.", e);
         }
     }
+
     
 
     public QuestionManager(InputStream inputStream) {
@@ -147,9 +149,18 @@ public class QuestionManager {
     }
 
     public static Path getWritableFilePath() {
-        return Paths.get("/backgammon-master/readme-resources/CamelQuestionDB.json").toAbsolutePath();
+        Path filePath = Paths.get("C:/backgammon-master/readme-resources/CamelQuestionDB.json"); // Absolute path
+        try {
+            Files.createDirectories(filePath.getParent());
+            if (!Files.exists(filePath)) {
+                Files.createFile(filePath);
+                System.out.println("Created new file at: " + filePath);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create directories or file for writable path: " + filePath, e);
+        }
+        return filePath;
     }
-
 
 
 

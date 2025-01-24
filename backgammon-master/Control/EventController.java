@@ -460,21 +460,10 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 			                    // Show the question popup and handle the answer
 			                    if (!showQuestionPopup(question)) {
 			                        infoPnl.print("Incorrect answer. Turn passed to the next player.", MessageType.ERROR);
-			                        gameplay.passTurnToNextPlayerDueToQuestionFailure();
+			                      //  gameplay.passTurnToNextPlayerDueToQuestionFailure();
 			                        return; // Stop further processing
 			                    }
 			                }
-
-			                
-
-			                // Execute the move
-			                cmd.runCommand("/move " + fromPip + " " + toPip);
-			                gameplay.unhighlightPips();
-			                isPipSelectionMode = false;
-			            }
-				        if (gameplay.getValidMoves().isValidFro(fromPip)) { // Check if the source pip is valid
-		                // After move, check if the destination pip is a Surprise Station
-				        	if (selectedPip.isSurpriseStation()) {
 				        	    infoPnl.print("Player landed on a Surprise Station.", MessageType.DEBUG); // Log
 				        	    Checker checker = getCurrentChecker();
 				        	    if (checker != null) {
@@ -490,7 +479,14 @@ public class EventController implements ColorParser, ColorPerspectiveParser, Inp
 				        	    }
 				        	}
 
-				            }
+			                
+
+			                // Execute the move
+			                cmd.runCommand("/move " + fromPip + " " + toPip);
+			                gameplay.unhighlightPips();
+			                isPipSelectionMode = false;
+			            }
+				       
 				       
 			        } else {
 			            infoPnl.print("You cannot move from this pip. It is not a valid starting point.", MessageType.ERROR);
