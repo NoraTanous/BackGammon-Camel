@@ -7,12 +7,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import Model.GameHistory;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameHistoryJsonUtil {
-    private static final String ABSOLUTE_FILE_PATH = "/backgammon-master/readme-resources/game_history.json";
+    private static final String FILE_PATH = "readme-resources/game_history.json";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     static {
@@ -22,39 +22,31 @@ public class GameHistoryJsonUtil {
         OBJECT_MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Optional: Avoid timestamps
     }
 
-    // Load history from the JSON file using an absolute path
+    // Load history from the JSON file in the classpath
     public static List<GameHistory> loadHistory() {
-        try {
-            File file = new File(ABSOLUTE_FILE_PATH);
-            if (!file.exists()) {
-                System.out.println("File not found at path: " + ABSOLUTE_FILE_PATH);
+        try (InputStream inputStream = GameHistoryJsonUtil.class.getClassLoader().getResourceAsStream(FILE_PATH)) {
+            if (inputStream == null) {
+                System.out.println("File not found in classpath: " + FILE_PATH);
                 return new ArrayList<>();
             }
-            System.out.println("File found at path: " + ABSOLUTE_FILE_PATH);
-            return OBJECT_MAPPER.readValue(file, new TypeReference<List<GameHistory>>() {});
+            System.out.println("File found in classpath: " + FILE_PATH);
+            return OBJECT_MAPPER.readValue(inputStream, new TypeReference<List<GameHistory>>() {});
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-    // Save history to the JSON file using an absolute path
     public static void saveHistory(List<GameHistory> historyList) {
         try {
-            File file = new File(ABSOLUTE_FILE_PATH);
-            if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
-                throw new IOException("Failed to create parent directories for path: " + file.getAbsolutePath());
-            }
+            File file = new File(GameHistoryJsonUtil.class.getClassLoader().getResource(FILE_PATH).getFile());
             OBJECT_MAPPER.writeValue(file, historyList);
-            System.out.println("History saved successfully to: " + file.getAbsolutePath());
-        } catch (IOException e) {
-            System.err.println("Failed to save history to path: " + ABSOLUTE_FILE_PATH);
-            e.printStackTrace();
+            System.out.println("History saved to: " + file.getAbsolutePath());
         } catch (Exception e) {
-            System.err.println("An unexpected error occurred while saving history.");
             e.printStackTrace();
         }
     }
+
 
     public static void saveGameHistory(GameHistory gameHistory) {
         try {
@@ -63,9 +55,10 @@ public class GameHistoryJsonUtil {
                 history = new ArrayList<>();
             }
             history.add(gameHistory);
-            saveHistory(history);
+            saveHistory(history); // Reuse the updated method
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }
